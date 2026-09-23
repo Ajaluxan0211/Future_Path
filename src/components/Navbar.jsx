@@ -36,12 +36,10 @@ export default function Navbar() {
     <nav className={`sticky top-0 z-50 bg-white border-b border-gray-200 transition-shadow duration-200 ${scrolled ? 'shadow-sm' : ''}`}>
       <div className="max-w-6xl mx-auto px-6 h-14 flex items-center gap-8">
 
-        {/* Logo — plain text, no dots */}
         <Link to="/" className="flex-shrink-0">
           <span className="text-xl font-bold text-gray-900">Agency</span>
         </Link>
 
-        {/* Nav links */}
         <div className="flex items-center gap-7 flex-1">
 
           <NavLink to="/" end
@@ -51,7 +49,6 @@ export default function Navbar() {
             Home
           </NavLink>
 
-          {/* Explore dropdown */}
           <div className="relative" ref={dropRef}>
             <button
               onClick={() => setExploreOpen(v => !v)}
@@ -109,12 +106,11 @@ export default function Navbar() {
           </NavLink>
         </div>
 
-        {/* Auth buttons */}
         <div className="flex items-center gap-4 flex-shrink-0">
           <Link to="/login" className="text-sm font-medium text-gray-700 hover:text-gray-900 transition-colors">
             Login
           </Link>
-          <Link to="/register"
+          <Link to="/signup"
             className="text-sm font-semibold text-white px-5 py-2 rounded-lg transition-colors hover:opacity-90"
             style={{ backgroundColor: '#0D5C3A' }}>
             Sign Up

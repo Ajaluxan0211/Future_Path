@@ -2,7 +2,7 @@ import { useState, useRef } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { Search, ChevronDown, AlertTriangle, ArrowRight, Globe, Mail } from 'lucide-react'
 
-/* ═══════════════ DATA ═══════════════ */
+/* ─── DATA ─── */
 const STATS = [
   { value: '120+',  label: 'Verified agencies'  },
   { value: '40+',   label: 'Countries'           },
@@ -35,17 +35,17 @@ const COUNTRIES = [
 ]
 
 const HOW_STEPS = [
-  { n: 1, title: 'Select Country',    desc: 'Identify your ideal destination based on policy and preference.'      },
-  { n: 2, title: 'Choose Course',     desc: 'Find programs that align with your career and migration pathway.'     },
-  { n: 3, title: 'Check Eligibility', desc: 'Use our automated tool to check visa and university requirements.'    },
-  { n: 4, title: 'Verified Agency',   desc: 'Connect with licensed agents vetted by our integrity team.'           },
-  { n: 5, title: 'Apply',             desc: 'Submit your application with confidence and track progress.'           },
+  { n: 1, title: 'Select Country',    desc: 'Identify your ideal destination based on policy and preference.'   },
+  { n: 2, title: 'Choose Course',     desc: 'Find programs that align with your career and migration pathway.'  },
+  { n: 3, title: 'Check Eligibility', desc: 'Use our automated tool to check visa and university requirements.' },
+  { n: 4, title: 'Verified Agency',   desc: 'Connect with licensed agents vetted by our integrity team.'        },
+  { n: 5, title: 'Apply',             desc: 'Submit your application with confidence and track progress.'        },
 ]
 
 const SCAM_REPORTS = [
-  { name: 'Global Pathways Pvt Ltd',  desc: 'Reported for charging fraudulent visa processing fees.',   status: 'URGENT',       badgeBg: '#DC2626', dot: '#F87171' },
-  { name: 'Venture Scholars Network', desc: 'Unverified claims of guaranteed Australian PR.',            status: 'UNDER REVIEW', badgeBg: '#15803D', dot: '#FCD34D' },
-  { name: 'Direct Visa Express',      desc: 'Fake scholarship advertisements on social media.',          status: 'URGENT',       badgeBg: '#DC2626', dot: '#F87171' },
+  { name: 'Global Pathways Pvt Ltd',  desc: 'Reported for charging fraudulent visa processing fees.',  status: 'URGENT',       badgeBg: '#DC2626', dot: '#F87171' },
+  { name: 'Venture Scholars Network', desc: 'Unverified claims of guaranteed Australian PR.',           status: 'UNDER REVIEW', badgeBg: '#15803D', dot: '#FCD34D' },
+  { name: 'Direct Visa Express',      desc: 'Fake scholarship advertisements on social media.',         status: 'URGENT',       badgeBg: '#DC2626', dot: '#F87171' },
 ]
 
 const QUICK_TAGS = ['Australia', 'Cyber Security', 'Canada PR', "UK Master's", 'Germany Tech']
@@ -64,25 +64,9 @@ const SUGGESTIONS = [
   { label: 'Monash University', type: 'University' },
 ]
 
-const NAV_LINKS = [
-  { to: '/countries',    label: 'Destinations'      },
-  { to: '/universities', label: 'University Finder'  },
-  { to: '/agencies',     label: 'Verified Agencies'  },
-  { to: '/scholarships', label: 'Scholarships'       },
-]
-
-const RESOURCE_LINKS = [
-  { to: '/visas',       label: 'Visa Guide'        },
-  { to: '/eligibility', label: 'IELTS Preparation' },
-  { to: '/report',      label: 'Fraud Prevention'  },
-  { to: '/',            label: 'Contact Support'   },
-]
-
-const LEGAL_LINKS = ['Privacy Policy', 'Terms of Service', 'Cookie Policy']
-
-/* ═══════════════ COMPONENT ═══════════════ */
+/* ─── COMPONENT ─── */
 export default function Home() {
-  const navigate  = useNavigate()
+  const navigate = useNavigate()
   const [query,   setQuery]   = useState('')
   const [typeVal, setTypeVal] = useState('')
   const [level,   setLevel]   = useState('')
@@ -102,13 +86,11 @@ export default function Home() {
   return (
     <div className="bg-white">
 
-      {/* ══ HERO ══ */}
+      {/* ── HERO ── */}
       <section style={{ backgroundColor: '#E8F5EE' }} className="py-16 px-6">
         <div className="max-w-3xl mx-auto text-center">
-          <div
-            className="inline-flex items-center text-xs font-medium px-4 py-1.5 rounded-full mb-7 border"
-            style={{ backgroundColor: '#C6E8D6', color: '#0D5C3A', borderColor: '#A8D5BC' }}
-          >
+          <div className="inline-flex items-center text-xs font-medium px-4 py-1.5 rounded-full mb-7 border"
+            style={{ backgroundColor: '#C6E8D6', color: '#0D5C3A', borderColor: '#A8D5BC' }}>
             Sri Lanka's trusted migration guidance platform
           </div>
 
@@ -121,7 +103,7 @@ export default function Home() {
             Your journey to global mobility starts with truth.
           </p>
 
-          {/* Search Bar */}
+          {/* Search */}
           <div className="relative max-w-2xl mx-auto" ref={searchRef}>
             <div className="flex items-center bg-white border border-gray-200 rounded-xl shadow-md overflow-visible">
               <div className="pl-4 pr-2 flex-shrink-0">
@@ -163,7 +145,7 @@ export default function Home() {
                 </div>
               </div>
               <button onClick={handleSearch}
-                className="m-1.5 text-white text-sm font-semibold px-6 py-2.5 rounded-lg transition-colors flex-shrink-0 hover:opacity-90"
+                className="m-1.5 text-white text-sm font-semibold px-6 py-2.5 rounded-lg hover:opacity-90 flex-shrink-0"
                 style={{ backgroundColor: '#0D5C3A' }}>
                 Search
               </button>
@@ -196,7 +178,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ══ STATS ══ */}
+      {/* ── STATS ── */}
       <section className="bg-white border-b border-gray-200">
         <div className="max-w-5xl mx-auto grid grid-cols-5 divide-x divide-gray-200">
           {STATS.map(s => (
@@ -208,20 +190,18 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ══ COUNTRIES ══ */}
+      {/* ── COUNTRIES ── */}
       <section className="py-14 px-6 bg-white">
         <div className="max-w-5xl mx-auto">
-          <div className="mb-1">
-            <h2 className="text-2xl font-bold text-gray-900">Choose your country</h2>
-            <div className="flex items-end justify-between mt-1">
-              <p className="text-sm text-gray-500">Explore opportunities based on your budget and career goals.</p>
-              <Link to="/countries" className="text-sm flex items-center gap-1 transition-colors flex-shrink-0 ml-4" style={{ color: '#0D5C3A' }}>
-                View all destinations <ArrowRight size={14} />
-              </Link>
-            </div>
+          <h2 className="text-2xl font-bold text-gray-900 mb-1">Choose your country</h2>
+          <div className="flex items-end justify-between mt-1 mb-6">
+            <p className="text-sm text-gray-500">Explore opportunities based on your budget and career goals.</p>
+            <Link to="/countries" className="text-sm flex items-center gap-1 flex-shrink-0 ml-4" style={{ color: '#0D5C3A' }}>
+              View all destinations <ArrowRight size={14} />
+            </Link>
           </div>
 
-          <div className="grid grid-cols-4 gap-4 mt-6">
+          <div className="grid grid-cols-4 gap-4">
             {COUNTRIES.map(c => (
               <div key={c.id} onClick={() => navigate(`/visas?country=${c.name}`)}
                 className="border border-gray-200 rounded-2xl overflow-hidden cursor-pointer hover:shadow-lg transition-all duration-200 bg-white group">
@@ -250,7 +230,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ══ HOW IT WORKS ══ */}
+      {/* ── HOW IT WORKS ── */}
       <section className="py-16 px-6 border-y border-gray-200" style={{ backgroundColor: '#F7FAF8' }}>
         <div className="max-w-4xl mx-auto">
           <h2 className="text-2xl font-bold text-gray-900 text-center mb-12">Get started in 5 steps</h2>
@@ -270,7 +250,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ══ SCAM REPORTS ══ */}
+      {/* ── SCAM REPORTS ── */}
       <section className="py-14 px-6 bg-white">
         <div className="max-w-2xl mx-auto text-center">
           <div className="flex items-center justify-center gap-2 mb-2">
@@ -305,79 +285,10 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ══ FOOTER ══ */}
-      <footer className="bg-gray-900 text-gray-400 pt-14 pb-6">
-        <div className="max-w-6xl mx-auto px-6">
-
-          {/* 4 columns */}
-          <div className="grid grid-cols-4 gap-10 mb-12">
-
-            {/* Brand */}
-            <div>
-              <div className="text-white font-bold text-xl mb-3">Agency</div>
-              <p className="text-sm text-gray-500 leading-relaxed mb-5">
-                The ultimate destination for Sri Lankans seeking truthful guidance on
-                international opportunities.
-              </p>
-              <div className="flex gap-3">
-                <Globe size={17} className="text-gray-500 hover:text-white cursor-pointer transition-colors" />
-                <Mail  size={17} className="text-gray-500 hover:text-white cursor-pointer transition-colors" />
-              </div>
-            </div>
-
-            {/* Navigation */}
-            <div>
-              <div className="text-xs uppercase tracking-widest font-semibold text-gray-400 mb-5">
-                Navigation
-              </div>
-              {NAV_LINKS.map(({ to, label }) => (
-                <Link key={label} to={to}
-                  className="block text-sm py-1.5 text-gray-400 hover:text-white transition-colors">
-                  {label}
-                </Link>
-              ))}
-            </div>
-
-            {/* Resources */}
-            <div>
-              <div className="text-xs uppercase tracking-widest font-semibold text-gray-400 mb-5">
-                Resources
-              </div>
-              {RESOURCE_LINKS.map(({ to, label }) => (
-                <Link key={label} to={to}
-                  className="block text-sm py-1.5 text-gray-400 hover:text-white transition-colors">
-                  {label}
-                </Link>
-              ))}
-            </div>
-
-            {/* Legal */}
-            <div>
-              <div className="text-xs uppercase tracking-widest font-semibold text-gray-400 mb-5">
-                Legal
-              </div>
-              {LEGAL_LINKS.map(label => (
-                <span key={label}
-                  className="block text-sm py-1.5 text-gray-400 hover:text-white cursor-pointer transition-colors">
-                  {label}
-                </span>
-              ))}
-            </div>
-          </div>
-
-          {/* Bottom bar */}
-          <div className="border-t border-gray-800 pt-5 flex justify-between items-center">
-            <p className="text-xs text-gray-600">
-              © 2024 Agency. All rights reserved. Your expert companion for global mobility.
-            </p>
-            <div className="flex gap-6 text-xs text-gray-500">
-              {['Privacy Policy', 'Terms of Service', 'Fraud Prevention'].map(l => (
-                <span key={l} className="hover:text-white cursor-pointer transition-colors">{l}</span>
-              ))}
-            </div>
-          </div>
-        </div>
-      </footer>
+      {/* ══════════════════════════════════════
+          FOOTER — only here, nowhere else
+      ══════════════════════════════════════ */}
+   
 
     </div>
   )

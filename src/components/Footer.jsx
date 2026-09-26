@@ -24,12 +24,13 @@ export default function Footer() {
           <div>
             <div className="text-xs uppercase tracking-widest font-semibold text-gray-400 mb-5">Navigation</div>
             {[
-              { to: '/countries',    label: 'Destinations'      },
-              { to: '/universities', label: 'University Finder'  },
-              { to: '/agencies',     label: 'Verified Agencies'  },
-              { to: '/scholarships', label: 'Scholarships'       },
+              { to: '/countries',    label: 'Destinations'     },
+              { to: '/universities', label: 'University Finder' },
+              { to: '/agencies',     label: 'Verified Agencies' },
+              { to: '/scholarships', label: 'Scholarships'      },
             ].map(({ to, label }) => (
-              <Link key={label} to={to} className="block text-sm py-1.5 text-gray-400 hover:text-white transition-colors">
+              <Link key={label} to={to}
+                className="block text-sm py-1.5 text-gray-400 hover:text-white transition-colors">
                 {label}
               </Link>
             ))}
@@ -44,7 +45,8 @@ export default function Footer() {
               { to: '/report',      label: 'Fraud Prevention'  },
               { to: '/',            label: 'Contact Support'   },
             ].map(({ to, label }) => (
-              <Link key={label} to={to} className="block text-sm py-1.5 text-gray-400 hover:text-white transition-colors">
+              <Link key={label} to={to}
+                className="block text-sm py-1.5 text-gray-400 hover:text-white transition-colors">
                 {label}
               </Link>
             ))}
@@ -54,7 +56,8 @@ export default function Footer() {
           <div>
             <div className="text-xs uppercase tracking-widest font-semibold text-gray-400 mb-5">Legal</div>
             {['Privacy Policy', 'Terms of Service', 'Cookie Policy'].map(label => (
-              <span key={label} className="block text-sm py-1.5 text-gray-400 hover:text-white cursor-pointer transition-colors">
+              <span key={label}
+                className="block text-sm py-1.5 text-gray-400 hover:text-white cursor-pointer transition-colors">
                 {label}
               </span>
             ))}

@@ -6,7 +6,7 @@ import Home    from '../pages/Home/Home'
 // Uncomment as you add each page:
  import Countries  from '../pages/Countries/Countries'
 import Visas      from '../pages/Visas/Visas'
-// import Courses    from '../pages/Courses/Courses'
+import Courses    from '../pages/Courses/Courses'
 // import Universities from '../pages/Universities/Universities'
 // import Scholarships from '../pages/Scholarships/Scholarships'
  import EligibilityChecker from '../pages/EligibilityChecker/EligibilityChecker'
@@ -27,6 +27,7 @@ export default function AppRoutes() {
           {/* Add routes below as you build each page: */}
           <Route path="/countries"   element={<Countries />}          /> 
           <Route path="/visas"       element={<Visas />}              /> 
+          <Route path="/courses"       element={<Courses />}              /> 
           
            <Route path="/eligibility" element={<EligibilityChecker />} /> 
         </Routes>

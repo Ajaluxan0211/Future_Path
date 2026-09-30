@@ -121,21 +121,21 @@ const ALL_COURSES = [
 ]
 
 const COUNTRIES = ['All Countries', 'Australia', 'Canada', 'United Kingdom', 'Germany', 'New Zealand']
-const LEVELS    = ['All Levels', "Bachelor's", "Master's", 'MSc', 'PhD', 'MBA', 'Postgraduate', 'Diploma']
-const FIELDS    = ['All Fields', 'Cyber Security', 'Computer Science', 'Data Science', 'Business Management', 'Nursing', 'Engineering']
+const LEVELS = ['All Levels', "Bachelor's", "Master's", 'MSc', 'PhD', 'MBA', 'Postgraduate', 'Diploma']
+const FIELDS = ['All Fields', 'Cyber Security', 'Computer Science', 'Data Science', 'Business Management', 'Nursing', 'Engineering']
 
 const CAREER_OUTCOMES = [
-  { role: 'SECURITY ANALYST',  salary: '$85,000' },
-  { role: 'SOC ANALYST',       salary: '$78,000' },
-  { role: 'PEN TESTER',        salary: '$95,000' },
-  { role: 'SECURITY ENGINEER', salary: '$110,000'},
+  { role: 'SECURITY ANALYST', salary: '$85,000' },
+  { role: 'SOC ANALYST', salary: '$78,000' },
+  { role: 'PEN TESTER', salary: '$95,000' },
+  { role: 'SECURITY ENGINEER', salary: '$110,000' },
 ]
 
 const QUICK_LINKS = [
-  { label: 'Cost Calculator',     icon: Calculator,  to: '/calculator'  },
-  { label: 'Scholarship Finder',  icon: Award,       to: '/scholarships'},
+  { label: 'Cost Calculator', icon: Calculator, to: '/calculator' },
+  { label: 'Scholarship Finder', icon: Award, to: '/scholarships' },
   { label: 'Eligibility Checker', icon: CheckSquare, to: '/eligibility' },
-  { label: 'Verified Agencies',   icon: Building,    to: '/agencies'    },
+  { label: 'Verified Agencies', icon: Building, to: '/agencies' },
 ]
 
 /* ══════════════════════════════════════
@@ -143,30 +143,50 @@ const QUICK_LINKS = [
 ══════════════════════════════════════ */
 export default function Courses() {
   const navigate = useNavigate()
-  const [search,    setSearch]    = useState('')
-  const [country,   setCountry]   = useState('All Countries')
-  const [level,     setLevel]     = useState('All Levels')
-  const [field,     setField]     = useState('All Fields')
-  const [sortBy,    setSortBy]    = useState('fee')
+  const [search, setSearch] = useState('')
+  const [country, setCountry] = useState('All Countries')
+  const [level, setLevel] = useState('All Levels')
+  const [field, setField] = useState('All Fields')
+  const [sortBy, setSortBy] = useState('fee')
   const [hoveredId, setHoveredId] = useState(null)
 
   const activeFilters = [
     country !== 'All Countries' && { key: 'country', label: country },
-    level   !== 'All Levels'   && { key: 'level',   label: level   },
-    field   !== 'All Fields'   && { key: 'field',   label: field   },
+    level !== 'All Levels' && { key: 'level', label: level },
+    field !== 'All Fields' && { key: 'field', label: field },
   ].filter(Boolean)
 
   function removeFilter(key) {
     if (key === 'country') setCountry('All Countries')
-    if (key === 'level')   setLevel('All Levels')
-    if (key === 'field')   setField('All Fields')
+    if (key === 'level') setLevel('All Levels')
+    if (key === 'field') setField('All Fields')
+  }
+
+  // Helper function to navigate to application page with formatted payload
+  const handleApplyClick = (course) => {
+    navigate(`/courses/${course.id}/apply`, {
+      state: {
+        course: {
+          title: course.title,
+          university: course.university,
+          country: course.country,
+          field: course.field,
+          level: course.level,
+          duration: course.duration,
+          tuition: course.fee,
+          ielts: course.ielts,
+          intake: course.intake || 'Rolling admissions',
+          deadline: 'Rolling admissions'
+        }
+      }
+    })
   }
 
   let filtered = ALL_COURSES.filter(c => {
-    const matchSearch  = search === '' || c.title.toLowerCase().includes(search.toLowerCase()) || c.university.toLowerCase().includes(search.toLowerCase())
+    const matchSearch = search === '' || c.title.toLowerCase().includes(search.toLowerCase()) || c.university.toLowerCase().includes(search.toLowerCase())
     const matchCountry = country === 'All Countries' || c.country === country
-    const matchLevel   = level   === 'All Levels'   || c.level   === level
-    const matchField   = field   === 'All Fields'   || c.field   === field
+    const matchLevel = level === 'All Levels' || c.level === level
+    const matchField = field === 'All Fields' || c.field === field
     return matchSearch && matchCountry && matchLevel && matchField
   })
 
@@ -315,7 +335,7 @@ export default function Courses() {
             ) : (
               filtered.map(c => {
                 const isHovered = hoveredId === c.id
-                const isBest    = c.bestMatch
+                const isBest = c.bestMatch
 
                 return (
                   <div
@@ -324,18 +344,18 @@ export default function Courses() {
                     onMouseLeave={() => setHoveredId(null)}
                     className="bg-white rounded-2xl overflow-visible relative transition-all duration-200"
                     style={{
-                      border:     isBest
+                      border: isBest
                         ? '2px solid #0D5C3A'
                         : isHovered
                           ? '1.5px solid #0D5C3A'
                           : '1px solid #E5E7EB',
-                      boxShadow:  isHovered
+                      boxShadow: isHovered
                         ? '0 8px 24px rgba(13, 92, 58, 0.12)'
                         : '0 1px 3px rgba(0,0,0,0.05)',
-                      transform:  isHovered ? 'translateY(-2px)' : 'translateY(0)',
+                      transform: isHovered ? 'translateY(-2px)' : 'translateY(0)',
                     }}
                   >
-                    {/* BEST MATCH badge — centred at top edge */}
+                    {/* BEST MATCH badge */}
                     {isBest && (
                       <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 z-20">
                         <span
@@ -400,8 +420,8 @@ export default function Courses() {
                               </button>
                             ))}
                             <button
-                              onClick={() => navigate('/agencies')}
-                              className="text-xs font-bold px-5 py-2 rounded-lg text-white transition-all hover:opacity-90 ml-auto"
+                              onClick={() => handleApplyClick(c)}
+                              className="text-xs font-bold px-5 py-2 rounded-lg text-white transition-all hover:opacity-90 ml-auto cursor-pointer"
                               style={{ backgroundColor: '#0D5C3A' }}
                             >
                               Apply now
@@ -463,10 +483,12 @@ export default function Courses() {
             <div className="text-xs mb-4 leading-relaxed" style={{ color: '#A8DFC4' }}>
               Get a personalized roadmap based on your profile and career goals.
             </div>
-            <button onClick={() => navigate('/eligibility')}
-              className="w-full bg-white font-bold text-xs py-2.5 rounded-lg hover:bg-gray-50 transition-colors"
-              style={{ color: '#0D5C3A' }}>
-              Check eligibility →
+            <button
+              onClick={() => handleApplyClick(ALL_COURSES[0])}
+              className="w-full text-xs font-bold py-2.5 px-4 rounded-lg bg-white transition-opacity hover:opacity-90 cursor-pointer"
+              style={{ color: '#0D5C3A' }}
+            >
+              Get Guidance
             </button>
           </div>
 

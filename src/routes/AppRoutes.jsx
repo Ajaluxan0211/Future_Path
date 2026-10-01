@@ -4,7 +4,7 @@ import Footer from '../components/Footer'
 import Home from '../pages/Home/Home'
 
 // Page imports:
-import CourseApply from '../pages/CourseApply/CourseApply'
+import CourseApply from '../pages/Courses/CourseApply'
 import Countries from '../pages/Countries/Countries'
 import Visas from '../pages/Visas/Visas'
 import Courses from '../pages/Courses/Courses'

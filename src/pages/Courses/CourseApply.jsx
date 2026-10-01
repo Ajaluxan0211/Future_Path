@@ -1,5 +1,6 @@
 import { useNavigate, useLocation, Link } from 'react-router-dom'
 import { Calendar, Clock, Shield, CheckCircle, Circle, ArrowRight } from 'lucide-react'
+import Footer from '../../components/Footer'
 
 /* ══════════════════════════════════════
    STATIC COURSE DATA
@@ -80,6 +81,7 @@ function ScoreBar({ label, value }) {
         />
       </div>
     </div>
+    
   )
 }
 
@@ -367,6 +369,8 @@ export default function CourseApply() {
           </div>
         </div>
       </div>
+      <Footer />
     </div>
+     
   )
 }

@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import Footer from '../../components/Footer'
 import {
   Search, Clock, Shield, Calendar,
   ArrowRight, X, TrendingUp,
@@ -494,6 +495,8 @@ export default function Courses() {
 
         </div>
       </div>
+      <Footer/>
     </div>
+    
   )
 }

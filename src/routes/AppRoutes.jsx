@@ -10,6 +10,7 @@ import Visas from '../pages/Visas/Visas'
 import Courses from '../pages/Courses/Courses'
 import Universities from '../pages/Universities/Universities'
 import EligibilityChecker from '../pages/EligibilityChecker/EligibilityChecker'
+import Scholarships from '../pages/Scholarships/Scholarships'
 
 // Only these 3 pages show the footer
 const FOOTER_ROUTES = ['/', '/countries', '/visas']
@@ -30,6 +31,7 @@ export default function AppRoutes() {
           <Route path="/courses/:id/apply" element={<CourseApply />} />
           <Route path="/universities" element={<Universities />} /> 
           <Route path="/eligibility" element={<EligibilityChecker />} /> 
+          <Route path="/scholarships" element={<Scholarships/>} />
         </Routes>
       </main>
 

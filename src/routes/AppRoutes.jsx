@@ -4,6 +4,7 @@ import Navbar from '../components/Navbar'
 import Footer from '../components/Footer'
 
 import Home from '../pages/Home/Home'
+
 import CourseApply from '../pages/Courses/CourseApply'
 import Countries from '../pages/Countries/Countries'
 import Visas from '../pages/Visas/Visas'
@@ -13,8 +14,16 @@ import EligibilityChecker from '../pages/EligibilityChecker/EligibilityChecker'
 import Scholarships from '../pages/Scholarships/Scholarships'
 import CountryComparison from '../pages/CountryComparison/CountryComparison'
 
+import Agencies from '../pages/Agencies/Agencies'
+import AgencyProfile from '../pages/AgencyProfile/AgencyProfile'
+import AgencyContact from '../pages/AgencyContact/AgencyContact'
+
 // Only these pages show the footer
-const FOOTER_ROUTES = ['/', '/countries', '/visas']
+const FOOTER_ROUTES = [
+  '/',
+  '/countries',
+  '/visas',
+]
 
 export default function AppRoutes() {
   const { pathname } = useLocation()
@@ -30,16 +39,28 @@ export default function AppRoutes() {
         <Routes>
 
           {/* Home */}
-          <Route path="/" element={<Home />} />
+          <Route
+            path="/"
+            element={<Home />}
+          />
 
           {/* Countries */}
-          <Route path="/countries" element={<Countries />} />
+          <Route
+            path="/countries"
+            element={<Countries />}
+          />
 
           {/* Visas */}
-          <Route path="/visas" element={<Visas />} />
+          <Route
+            path="/visas"
+            element={<Visas />}
+          />
 
           {/* Courses */}
-          <Route path="/courses" element={<Courses />} />
+          <Route
+            path="/courses"
+            element={<Courses />}
+          />
 
           {/* Course Apply */}
           <Route
@@ -53,7 +74,7 @@ export default function AppRoutes() {
             element={<Universities />}
           />
 
-          {/* Eligibility Checker */}
+          {/* Eligibility */}
           <Route
             path="/eligibility"
             element={<EligibilityChecker />}
@@ -71,10 +92,31 @@ export default function AppRoutes() {
             element={<CountryComparison />}
           />
 
-          {/* Keep your old URL working too */}
           <Route
             path="/countrycomparison"
             element={<CountryComparison />}
+          />
+
+          {/* ========================= */}
+          {/* AGENCY ROUTES */}
+          {/* ========================= */}
+
+          {/* Agency Directory */}
+          <Route
+            path="/agencies"
+            element={<Agencies />}
+          />
+
+          {/* Agency Profile */}
+          <Route
+            path="/agencies/:id"
+            element={<AgencyProfile />}
+          />
+
+          {/* Agency Contact */}
+          <Route
+            path="/agencies/:id/contact"
+            element={<AgencyContact />}
           />
 
         </Routes>

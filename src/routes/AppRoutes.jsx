@@ -18,6 +18,8 @@ import Agencies from '../pages/Agencies/Agencies'
 import AgencyProfile from '../pages/AgencyProfile/AgencyProfile'
 import AgencyContact from '../pages/AgencyContact/AgencyContact'
 
+import ScholarshipDetail from '../pages/ScholarshipDetail/ScholarshipDetail'
+
 // Only these pages show the footer
 const FOOTER_ROUTES = [
   '/',
@@ -38,55 +40,91 @@ export default function AppRoutes() {
       <main className="flex-1">
         <Routes>
 
-          {/* Home */}
+          {/* ========================= */}
+          {/* HOME */}
+          {/* ========================= */}
+
           <Route
             path="/"
             element={<Home />}
           />
 
-          {/* Countries */}
+
+          {/* ========================= */}
+          {/* COUNTRIES */}
+          {/* ========================= */}
+
           <Route
             path="/countries"
             element={<Countries />}
           />
 
-          {/* Visas */}
+
+          {/* ========================= */}
+          {/* VISAS */}
+          {/* ========================= */}
+
           <Route
             path="/visas"
             element={<Visas />}
           />
 
-          {/* Courses */}
+
+          {/* ========================= */}
+          {/* COURSES */}
+          {/* ========================= */}
+
           <Route
             path="/courses"
             element={<Courses />}
           />
 
-          {/* Course Apply */}
           <Route
             path="/courses/:id/apply"
             element={<CourseApply />}
           />
 
-          {/* Universities */}
+
+          {/* ========================= */}
+          {/* UNIVERSITIES */}
+          {/* ========================= */}
+
           <Route
             path="/universities"
             element={<Universities />}
           />
 
-          {/* Eligibility */}
+
+          {/* ========================= */}
+          {/* ELIGIBILITY */}
+          {/* ========================= */}
+
           <Route
             path="/eligibility"
             element={<EligibilityChecker />}
           />
 
-          {/* Scholarships */}
+
+          {/* ========================= */}
+          {/* SCHOLARSHIPS */}
+          {/* ========================= */}
+
           <Route
             path="/scholarships"
             element={<Scholarships />}
           />
 
-          {/* Country Comparison */}
+          {/* Scholarship Detail */}
+          <Route
+            path="/scholarships/:id"
+            element={<ScholarshipDetail />}
+          />
+
+
+          {/* ========================= */}
+          {/* COUNTRY COMPARISON */}
+          {/* ========================= */}
+
           <Route
             path="/compare"
             element={<CountryComparison />}
@@ -97,8 +135,9 @@ export default function AppRoutes() {
             element={<CountryComparison />}
           />
 
+
           {/* ========================= */}
-          {/* AGENCY ROUTES */}
+          {/* AGENCIES */}
           {/* ========================= */}
 
           {/* Agency Directory */}

@@ -19,6 +19,7 @@ import AgencyProfile from '../pages/AgencyProfile/AgencyProfile'
 import AgencyContact from '../pages/AgencyContact/AgencyContact'
 
 import ScholarshipDetail from '../pages/ScholarshipDetail/ScholarshipDetail'
+import ScholarshipApply from '../pages/ScholarshipApply/ScholarshipApply'
 
 // Only these pages show the footer
 const FOOTER_ROUTES = [
@@ -109,16 +110,23 @@ export default function AppRoutes() {
           {/* SCHOLARSHIPS */}
           {/* ========================= */}
 
-          <Route
-            path="/scholarships"
-            element={<Scholarships />}
-          />
+          {/* Scholarships */}
+<Route
+  path="/scholarships"
+  element={<Scholarships />}
+/>
 
-          {/* Scholarship Detail */}
-          <Route
-            path="/scholarships/:id"
-            element={<ScholarshipDetail />}
-          />
+{/* Scholarship Detail */}
+<Route
+  path="/scholarships/:id"
+  element={<ScholarshipDetail />}
+/>
+
+{/* Scholarship Apply */}
+<Route
+  path="/scholarships/:id/apply"
+  element={<ScholarshipApply />}
+/>
 
 
           {/* ========================= */}

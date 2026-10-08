@@ -21,11 +21,18 @@ import AgencyContact from '../pages/AgencyContact/AgencyContact'
 import ScholarshipDetail from '../pages/ScholarshipDetail/ScholarshipDetail'
 import ScholarshipApply from '../pages/ScholarshipApply/ScholarshipApply'
 
-// Only these pages show the footer
+import ReportScam from '../pages/ReportScam/ReportScam'
+
+// =====================================================
+// Pages that should display the Footer
+// =====================================================
+
 const FOOTER_ROUTES = [
   '/',
   '/countries',
   '/visas',
+  '/report',
+  '/report-scam',
 ]
 
 export default function AppRoutes() {
@@ -36,14 +43,24 @@ export default function AppRoutes() {
   return (
     <div className="min-h-screen flex flex-col bg-white">
 
+      {/* ================================================= */}
+      {/* NAVBAR */}
+      {/* ================================================= */}
+
       <Navbar />
 
+
+      {/* ================================================= */}
+      {/* MAIN CONTENT */}
+      {/* ================================================= */}
+
       <main className="flex-1">
+
         <Routes>
 
-          {/* ========================= */}
+          {/* ================================================= */}
           {/* HOME */}
-          {/* ========================= */}
+          {/* ================================================= */}
 
           <Route
             path="/"
@@ -51,9 +68,9 @@ export default function AppRoutes() {
           />
 
 
-          {/* ========================= */}
+          {/* ================================================= */}
           {/* COUNTRIES */}
-          {/* ========================= */}
+          {/* ================================================= */}
 
           <Route
             path="/countries"
@@ -61,9 +78,9 @@ export default function AppRoutes() {
           />
 
 
-          {/* ========================= */}
+          {/* ================================================= */}
           {/* VISAS */}
-          {/* ========================= */}
+          {/* ================================================= */}
 
           <Route
             path="/visas"
@@ -71,34 +88,42 @@ export default function AppRoutes() {
           />
 
 
-          {/* ========================= */}
+          {/* ================================================= */}
           {/* COURSES */}
-          {/* ========================= */}
+          {/* ================================================= */}
 
           <Route
             path="/courses"
             element={<Courses />}
           />
 
+          {/* Course Apply */}
           <Route
             path="/courses/:id/apply"
             element={<CourseApply />}
           />
 
 
-          {/* ========================= */}
+          {/* ================================================= */}
           {/* UNIVERSITIES */}
-          {/* ========================= */}
+          {/* ================================================= */}
 
+          {/* University List */}
           <Route
             path="/universities"
             element={<Universities />}
           />
 
+          {/* University with ID */}
+          <Route
+            path="/universities/:id"
+            element={<Universities />}
+          />
 
-          {/* ========================= */}
-          {/* ELIGIBILITY */}
-          {/* ========================= */}
+
+          {/* ================================================= */}
+          {/* ELIGIBILITY CHECKER */}
+          {/* ================================================= */}
 
           <Route
             path="/eligibility"
@@ -106,47 +131,65 @@ export default function AppRoutes() {
           />
 
 
-          {/* ========================= */}
+          {/* ================================================= */}
           {/* SCHOLARSHIPS */}
-          {/* ========================= */}
+          {/* ================================================= */}
 
-          {/* Scholarships */}
-<Route
-  path="/scholarships"
-  element={<Scholarships />}
-/>
+          {/* Scholarship List */}
+          <Route
+            path="/scholarships"
+            element={<Scholarships />}
+          />
 
-{/* Scholarship Detail */}
-<Route
-  path="/scholarships/:id"
-  element={<ScholarshipDetail />}
-/>
+          {/* Scholarship Detail */}
+          <Route
+            path="/scholarships/:id"
+            element={<ScholarshipDetail />}
+          />
 
-{/* Scholarship Apply */}
-<Route
-  path="/scholarships/:id/apply"
-  element={<ScholarshipApply />}
-/>
+          {/* Scholarship Apply */}
+          <Route
+            path="/scholarships/:id/apply"
+            element={<ScholarshipApply />}
+          />
 
 
-          {/* ========================= */}
+          {/* ================================================= */}
+          {/* REPORT SCAM */}
+          {/* ================================================= */}
+
+          {/* Main URL */}
+          <Route
+            path="/report"
+            element={<ReportScam />}
+          />
+
+          {/* Alternative URL */}
+          <Route
+            path="/report-scam"
+            element={<ReportScam />}
+          />
+
+
+          {/* ================================================= */}
           {/* COUNTRY COMPARISON */}
-          {/* ========================= */}
+          {/* ================================================= */}
 
           <Route
             path="/compare"
             element={<CountryComparison />}
           />
 
+          {/* Old URL - kept working */}
           <Route
             path="/countrycomparison"
             element={<CountryComparison />}
           />
 
 
-          {/* ========================= */}
+          {/* ================================================= */}
           {/* AGENCIES */}
-          {/* ========================= */}
+          {/* ================================================= */}
 
           {/* Agency Directory */}
           <Route
@@ -167,9 +210,14 @@ export default function AppRoutes() {
           />
 
         </Routes>
+
       </main>
 
-      {/* Footer only on Home, Countries and Visas */}
+
+      {/* ================================================= */}
+      {/* FOOTER */}
+      {/* ================================================= */}
+
       {showFooter && <Footer />}
 
     </div>

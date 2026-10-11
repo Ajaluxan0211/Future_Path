@@ -22,6 +22,7 @@ import ScholarshipDetail from '../pages/ScholarshipDetail/ScholarshipDetail'
 import ScholarshipApply from '../pages/ScholarshipApply/ScholarshipApply'
 
 import ReportScam from '../pages/ReportScam/ReportScam'
+import Storie from '../pages/Storie/Storie'
 
 // =====================================================
 // Pages that should display the Footer
@@ -169,6 +170,8 @@ export default function AppRoutes() {
             path="/report-scam"
             element={<ReportScam />}
           />
+          {/* Stories */}
+<Route path="/storie" element={<Storie />} />
 
 
           {/* ================================================= */}

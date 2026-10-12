@@ -1,37 +1,44 @@
+
 import { Routes, Route, useLocation } from 'react-router-dom'
 
 import Navbar from '../components/Navbar'
 import Footer from '../components/Footer'
 
+// Main pages
 import Home from '../pages/Home/Home'
-
-import CourseApply from '../pages/Courses/CourseApply'
 import Countries from '../pages/Countries/Countries'
 import Visas from '../pages/Visas/Visas'
 import Courses from '../pages/Courses/Courses'
 import Universities from '../pages/Universities/Universities'
+
+// Course pages
+import CourseApply from '../pages/Courses/CourseApply'
+
+// Other pages
 import EligibilityChecker from '../pages/EligibilityChecker/EligibilityChecker'
 import Scholarships from '../pages/Scholarships/Scholarships'
 import CountryComparison from '../pages/CountryComparison/CountryComparison'
 
+// Agency pages
 import Agencies from '../pages/Agencies/Agencies'
 import AgencyProfile from '../pages/AgencyProfile/AgencyProfile'
 import AgencyContact from '../pages/AgencyContact/AgencyContact'
 
+// Scholarship pages
 import ScholarshipDetail from '../pages/ScholarshipDetail/ScholarshipDetail'
 import ScholarshipApply from '../pages/ScholarshipApply/ScholarshipApply'
 
+// Stories and scam reporting
 import ReportScam from '../pages/ReportScam/ReportScam'
 import Storie from '../pages/Storie/Storie'
 
-// =====================================================
-// Pages that should display the Footer
-// =====================================================
-
+// Pages that display the footer
 const FOOTER_ROUTES = [
   '/',
   '/countries',
   '/visas',
+  '/stories',
+  '/storie',
   '/report',
   '/report-scam',
 ]
@@ -43,186 +50,94 @@ export default function AppRoutes() {
 
   return (
     <div className="min-h-screen flex flex-col bg-white">
-
-      {/* ================================================= */}
-      {/* NAVBAR */}
-      {/* ================================================= */}
-
       <Navbar />
 
-
-      {/* ================================================= */}
-      {/* MAIN CONTENT */}
-      {/* ================================================= */}
-
       <main className="flex-1">
-
         <Routes>
+          {/* Home */}
+          <Route path="/" element={<Home />} />
 
-          {/* ================================================= */}
-          {/* HOME */}
-          {/* ================================================= */}
+          {/* Countries and visas */}
+          <Route path="/countries" element={<Countries />} />
+          <Route path="/visas" element={<Visas />} />
 
-          <Route
-            path="/"
-            element={<Home />}
-          />
-
-
-          {/* ================================================= */}
-          {/* COUNTRIES */}
-          {/* ================================================= */}
-
-          <Route
-            path="/countries"
-            element={<Countries />}
-          />
-
-
-          {/* ================================================= */}
-          {/* VISAS */}
-          {/* ================================================= */}
-
-          <Route
-            path="/visas"
-            element={<Visas />}
-          />
-
-
-          {/* ================================================= */}
-          {/* COURSES */}
-          {/* ================================================= */}
-
-          <Route
-            path="/courses"
-            element={<Courses />}
-          />
-
-          {/* Course Apply */}
+          {/* Courses */}
+          <Route path="/courses" element={<Courses />} />
           <Route
             path="/courses/:id/apply"
             element={<CourseApply />}
           />
 
-
-          {/* ================================================= */}
-          {/* UNIVERSITIES */}
-          {/* ================================================= */}
-
-          {/* University List */}
+          {/* Universities */}
           <Route
             path="/universities"
             element={<Universities />}
           />
-
-          {/* University with ID */}
           <Route
             path="/universities/:id"
             element={<Universities />}
           />
 
-
-          {/* ================================================= */}
-          {/* ELIGIBILITY CHECKER */}
-          {/* ================================================= */}
-
+          {/* Eligibility checker */}
           <Route
             path="/eligibility"
             element={<EligibilityChecker />}
           />
 
-
-          {/* ================================================= */}
-          {/* SCHOLARSHIPS */}
-          {/* ================================================= */}
-
-          {/* Scholarship List */}
+          {/* Scholarships */}
           <Route
             path="/scholarships"
             element={<Scholarships />}
           />
-
-          {/* Scholarship Detail */}
+          <Route
+            path="/scholarships/:id/apply"
+            element={<ScholarshipApply />}
+          />
           <Route
             path="/scholarships/:id"
             element={<ScholarshipDetail />}
           />
 
-          {/* Scholarship Apply */}
-          <Route
-            path="/scholarships/:id/apply"
-            element={<ScholarshipApply />}
-          />
-
-
-          {/* ================================================= */}
-          {/* REPORT SCAM */}
-          {/* ================================================= */}
-
-          {/* Main URL */}
-          <Route
-            path="/report"
-            element={<ReportScam />}
-          />
-
-          {/* Alternative URL */}
-          <Route
-            path="/report-scam"
-            element={<ReportScam />}
-          />
-          {/* Stories */}
-<Route path="/storie" element={<Storie />} />
-
-
-          {/* ================================================= */}
-          {/* COUNTRY COMPARISON */}
-          {/* ================================================= */}
-
+          {/* Country comparison */}
           <Route
             path="/compare"
             element={<CountryComparison />}
           />
-
-          {/* Old URL - kept working */}
           <Route
             path="/countrycomparison"
             element={<CountryComparison />}
           />
 
-
-          {/* ================================================= */}
-          {/* AGENCIES */}
-          {/* ================================================= */}
-
-          {/* Agency Directory */}
+          {/* Agencies */}
+          <Route path="/agencies" element={<Agencies />} />
           <Route
-            path="/agencies"
-            element={<Agencies />}
+            path="/agencies/:id/contact"
+            element={<AgencyContact />}
           />
-
-          {/* Agency Profile */}
           <Route
             path="/agencies/:id"
             element={<AgencyProfile />}
           />
 
-          {/* Agency Contact */}
+          {/* Scam reporting */}
+          <Route path="/report" element={<ReportScam />} />
           <Route
-            path="/agencies/:id/contact"
-            element={<AgencyContact />}
+            path="/report-scam"
+            element={<ReportScam />}
           />
 
-        </Routes>
+          {/* Stories */}
+          <Route path="/stories" element={<Storie />} />
 
+          {/* Keep the old URL working */}
+          <Route path="/storie" element={<Storie />} />
+
+          {/* Login and registration routes can be added here
+              when their page components are available. */}
+        </Routes>
       </main>
 
-
-      {/* ================================================= */}
-      {/* FOOTER */}
-      {/* ================================================= */}
-
       {showFooter && <Footer />}
-
     </div>
   )
 }

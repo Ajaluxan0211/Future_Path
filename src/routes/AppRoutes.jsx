@@ -31,6 +31,8 @@ import ScholarshipApply from '../pages/ScholarshipApply/ScholarshipApply'
 // Stories and scam reporting
 import ReportScam from '../pages/ReportScam/ReportScam'
 import Storie from '../pages/Storie/Storie'
+import SignUp from '../pages/Auth/Signup'
+import StudentRegister from '../pages/Auth/StudentRegister'
 
 // Pages that display the footer
 const FOOTER_ROUTES = [
@@ -131,6 +133,12 @@ export default function AppRoutes() {
 
           {/* Keep the old URL working */}
           <Route path="/storie" element={<Storie />} />
+          <Route path="/register" element={<SignUp />} />
+          <Route
+  path="/register/student"
+  element={<StudentRegister />}
+/>
+          
 
           {/* Login and registration routes can be added here
               when their page components are available. */}

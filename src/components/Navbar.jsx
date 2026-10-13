@@ -110,11 +110,12 @@ export default function Navbar() {
           <Link to="/login" className="text-sm font-medium text-gray-700 hover:text-gray-900 transition-colors">
             Login
           </Link>
-          <Link to="/signup"
-            className="text-sm font-semibold text-white px-5 py-2 rounded-lg transition-colors hover:opacity-90"
-            style={{ backgroundColor: '#0D5C3A' }}>
-            Sign Up
-          </Link>
+         <Link
+  to="/register"
+  className="rounded-lg bg-[#0B603A] px-5 py-2.5 font-semibold text-white hover:bg-[#084B2D]"
+>
+  Sign Up
+</Link>
         </div>
 
       </div>

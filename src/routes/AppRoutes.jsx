@@ -33,6 +33,7 @@ import ReportScam from '../pages/ReportScam/ReportScam'
 import Storie from '../pages/Storie/Storie'
 import SignUp from '../pages/Auth/Signup'
 import StudentRegister from '../pages/Auth/StudentRegister'
+import AgencyRegister from '../pages/Auth/AgencyRegister'
 
 // Pages that display the footer
 const FOOTER_ROUTES = [
@@ -137,6 +138,10 @@ export default function AppRoutes() {
           <Route
   path="/register/student"
   element={<StudentRegister />}
+/>
+<Route
+  path="/register/agency"
+  element={<AgencyRegister />}
 />
           
 

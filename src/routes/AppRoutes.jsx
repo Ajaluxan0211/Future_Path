@@ -21,7 +21,11 @@ import ScholarshipApply from '../pages/ScholarshipApply/ScholarshipApply'
 import ReportScam from '../pages/ReportScam/ReportScam'
 import Storie from '../pages/Storie/Storie'
 import Login from '../pages/Auth/Login'
+import SignUp from '../pages/Auth/SignUp'
 import AdminRoutes from './AdminRoutes'
+import StudentRegister from '../pages/Auth/StudentRegister'
+import AgencyRegister from '../pages/Auth/AgencyRegister'
+import AdminRegister from '../pages/Auth/AdminRegister'
 
 const FOOTER_ROUTES = [
   '/',
@@ -34,7 +38,7 @@ const FOOTER_ROUTES = [
 
 export default function AppRoutes() {
   const { pathname } = useLocation()
-  const isAdminRoute = pathname.startsWith('/admin')
+ const isAdminRoute = pathname.startsWith('/admin/')
   const showFooter = FOOTER_ROUTES.includes(pathname)
 
   return (
@@ -69,7 +73,12 @@ export default function AppRoutes() {
         <Route path="/compare" element={<CountryComparison />} />
         <Route path="/countrycomparison" element={<CountryComparison />} />
 
-        <Route path="/login" element={<Login />} />
+       <Route path="/login" element={<Login />} />
+<Route path="/register" element={<SignUp />} />
+<Route path="/register/student" element={<StudentRegister />} />
+<Route path="/register/agency" element={<AgencyRegister />} />
+<Route path="/admin-register" element={<AdminRegister />} />
+
 
         {/* All admin routes use AdminLayout */}
         <Route path="/admin/*" element={<AdminRoutes />} />

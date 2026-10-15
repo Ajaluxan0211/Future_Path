@@ -4,153 +4,78 @@ import { Routes, Route, useLocation } from 'react-router-dom'
 import Navbar from '../components/Navbar'
 import Footer from '../components/Footer'
 
-// Main pages
 import Home from '../pages/Home/Home'
 import Countries from '../pages/Countries/Countries'
 import Visas from '../pages/Visas/Visas'
 import Courses from '../pages/Courses/Courses'
-import Universities from '../pages/Universities/Universities'
-
-// Course pages
 import CourseApply from '../pages/Courses/CourseApply'
-
-// Other pages
+import Universities from '../pages/Universities/Universities'
 import EligibilityChecker from '../pages/EligibilityChecker/EligibilityChecker'
 import Scholarships from '../pages/Scholarships/Scholarships'
 import CountryComparison from '../pages/CountryComparison/CountryComparison'
-
-// Agency pages
 import Agencies from '../pages/Agencies/Agencies'
 import AgencyProfile from '../pages/AgencyProfile/AgencyProfile'
 import AgencyContact from '../pages/AgencyContact/AgencyContact'
-
-// Scholarship pages
 import ScholarshipDetail from '../pages/ScholarshipDetail/ScholarshipDetail'
 import ScholarshipApply from '../pages/ScholarshipApply/ScholarshipApply'
-
-// Stories and scam reporting
 import ReportScam from '../pages/ReportScam/ReportScam'
 import Storie from '../pages/Storie/Storie'
-import SignUp from '../pages/Auth/Signup'
-import StudentRegister from '../pages/Auth/StudentRegister'
-import AgencyRegister from '../pages/Auth/AgencyRegister'
+import Login from '../pages/Auth/Login'
+import AdminRoutes from './AdminRoutes'
 
-// Pages that display the footer
 const FOOTER_ROUTES = [
   '/',
   '/countries',
   '/visas',
-  '/stories',
-  '/storie',
   '/report',
   '/report-scam',
+  '/stories',
 ]
 
 export default function AppRoutes() {
   const { pathname } = useLocation()
-
+  const isAdminRoute = pathname.startsWith('/admin')
   const showFooter = FOOTER_ROUTES.includes(pathname)
 
   return (
-    <div className="min-h-screen flex flex-col bg-white">
-      <Navbar />
+    <div className="min-h-screen w-full">
+      {!isAdminRoute && <Navbar />}
 
-      <main className="flex-1">
-        <Routes>
-          {/* Home */}
-          <Route path="/" element={<Home />} />
+      <Routes>
+        {/* Public pages */}
+        <Route path="/" element={<Home />} />
+        <Route path="/countries" element={<Countries />} />
+        <Route path="/visas" element={<Visas />} />
+        <Route path="/courses" element={<Courses />} />
+        <Route path="/courses/:id/apply" element={<CourseApply />} />
+        <Route path="/universities" element={<Universities />} />
+        <Route path="/universities/:id" element={<Universities />} />
+        <Route path="/eligibility" element={<EligibilityChecker />} />
 
-          {/* Countries and visas */}
-          <Route path="/countries" element={<Countries />} />
-          <Route path="/visas" element={<Visas />} />
+        <Route path="/scholarships" element={<Scholarships />} />
+        <Route path="/scholarships/:id/apply" element={<ScholarshipApply />} />
+        <Route path="/scholarships/:id" element={<ScholarshipDetail />} />
 
-          {/* Courses */}
-          <Route path="/courses" element={<Courses />} />
-          <Route
-            path="/courses/:id/apply"
-            element={<CourseApply />}
-          />
+        <Route path="/agencies" element={<Agencies />} />
+        <Route path="/agencies/:id/contact" element={<AgencyContact />} />
+        <Route path="/agencies/:id" element={<AgencyProfile />} />
 
-          {/* Universities */}
-          <Route
-            path="/universities"
-            element={<Universities />}
-          />
-          <Route
-            path="/universities/:id"
-            element={<Universities />}
-          />
+        <Route path="/report" element={<ReportScam />} />
+        <Route path="/report-scam" element={<ReportScam />} />
 
-          {/* Eligibility checker */}
-          <Route
-            path="/eligibility"
-            element={<EligibilityChecker />}
-          />
+        <Route path="/stories" element={<Storie />} />
+        <Route path="/storie" element={<Storie />} />
 
-          {/* Scholarships */}
-          <Route
-            path="/scholarships"
-            element={<Scholarships />}
-          />
-          <Route
-            path="/scholarships/:id/apply"
-            element={<ScholarshipApply />}
-          />
-          <Route
-            path="/scholarships/:id"
-            element={<ScholarshipDetail />}
-          />
+        <Route path="/compare" element={<CountryComparison />} />
+        <Route path="/countrycomparison" element={<CountryComparison />} />
 
-          {/* Country comparison */}
-          <Route
-            path="/compare"
-            element={<CountryComparison />}
-          />
-          <Route
-            path="/countrycomparison"
-            element={<CountryComparison />}
-          />
+        <Route path="/login" element={<Login />} />
 
-          {/* Agencies */}
-          <Route path="/agencies" element={<Agencies />} />
-          <Route
-            path="/agencies/:id/contact"
-            element={<AgencyContact />}
-          />
-          <Route
-            path="/agencies/:id"
-            element={<AgencyProfile />}
-          />
+        {/* All admin routes use AdminLayout */}
+        <Route path="/admin/*" element={<AdminRoutes />} />
+      </Routes>
 
-          {/* Scam reporting */}
-          <Route path="/report" element={<ReportScam />} />
-          <Route
-            path="/report-scam"
-            element={<ReportScam />}
-          />
-
-          {/* Stories */}
-          <Route path="/stories" element={<Storie />} />
-
-          {/* Keep the old URL working */}
-          <Route path="/storie" element={<Storie />} />
-          <Route path="/register" element={<SignUp />} />
-          <Route
-  path="/register/student"
-  element={<StudentRegister />}
-/>
-<Route
-  path="/register/agency"
-  element={<AgencyRegister />}
-/>
-          
-
-          {/* Login and registration routes can be added here
-              when their page components are available. */}
-        </Routes>
-      </main>
-
-      {showFooter && <Footer />}
+      {!isAdminRoute && showFooter && <Footer />}
     </div>
   )
 }

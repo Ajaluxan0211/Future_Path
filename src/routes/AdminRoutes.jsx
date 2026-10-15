@@ -1,22 +1,22 @@
 
 import { Routes, Route, Link } from 'react-router-dom'
 import AdminLayout from '../layouts/AdminLayout'
-import Dashboard from '../pages/admin/Dashboard'
+import Dashboard from '../pages/Admin/DashBoard'
 
 function ComingSoon({ title }) {
   return (
-    <div className="rounded-xl border border-slate-200 bg-white p-8 text-center">
+    <section className="rounded-2xl border border-slate-200 bg-white p-8">
       <h2 className="text-xl font-bold text-slate-900">{title}</h2>
       <p className="mt-2 text-sm text-slate-500">
         This admin page will be developed next.
       </p>
       <Link
         to="/admin"
-        className="mt-5 inline-flex rounded-lg bg-[#0B603A] px-4 py-2 text-sm font-semibold text-white hover:bg-[#084A2E]"
+        className="mt-5 inline-flex rounded-lg bg-[#087653] px-4 py-2 text-sm font-semibold text-white hover:bg-[#065D40]"
       >
         Back to Dashboard
       </Link>
-    </div>
+    </section>
   )
 }
 
@@ -41,7 +41,7 @@ const pages = [
 export default function AdminRoutes() {
   return (
     <Routes>
-      <Route path="/admin" element={<AdminLayout />}>
+      <Route element={<AdminLayout />}>
         <Route index element={<Dashboard />} />
 
         {pages.map(([path, title]) => (

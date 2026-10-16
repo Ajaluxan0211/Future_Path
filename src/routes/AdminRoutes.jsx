@@ -2,6 +2,7 @@
 import { Routes, Route, Link } from 'react-router-dom'
 import AdminLayout from '../layouts/AdminLayout'
 import Dashboard from '../pages/Admin/DashBoard'
+import AgencyVerification from '../pages/admin/AgencyVerification'
 
 function ComingSoon({ title }) {
   return (
@@ -43,6 +44,10 @@ export default function AdminRoutes() {
     <Routes>
       <Route element={<AdminLayout />}>
         <Route index element={<Dashboard />} />
+        <Route
+  path="agency-verification"
+  element={<AgencyVerification />}
+/>
 
         {pages.map(([path, title]) => (
           <Route

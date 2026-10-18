@@ -6,6 +6,9 @@ import AgencyVerification from '../pages/admin/AgencyVerification'
 import Agencies from '../pages/admin/Agencies'
 import Users from '../pages/admin/Users'
 import ScamReports from '../pages/admin/ScamReports'
+import Countries from '../pages/admin/Countries'
+import Visas from '../pages/admin/Visas'
+import Courses from '../pages/admin/Courses'
 
 function ComingSoon({ title }) {
   return (
@@ -54,6 +57,9 @@ export default function AdminRoutes() {
 <Route path="agencies" element={<Agencies />} />
  <Route path="users" element={<Users />} />
  <Route path="scam-reports" element={<ScamReports />} />
+ <Route path="countries" element={<Countries />} />
+ <Route path="visas" element={<Visas/>} />
+ <Route path="courses" element={<Courses />} />
 
         {pages.map(([path, title]) => (
           <Route

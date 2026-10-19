@@ -10,6 +10,9 @@ import Countries from '../pages/admin/Countries'
 import Visas from '../pages/admin/Visas'
 import Courses from '../pages/admin/Courses'
 import Universities from '../pages/admin/Universities'
+import Scholarships from '../pages/admin/Scholarships'
+import SuccessStories from '../pages/admin/SuccessStories'
+import AnalyticsReports from '../pages/admin/AnalyticsReports'
 
 function ComingSoon({ title }) {
   return (
@@ -62,7 +65,9 @@ export default function AdminRoutes() {
  <Route path="visas" element={<Visas/>} />
  <Route path="courses" element={<Courses />} />
  <Route path="universities" element={<Universities />} />
-
+ <Route path="scholarships" element={<Scholarships />} />
+ <Route path="stories" element={<SuccessStories />} />
+        <Route path="analytics" element={<AnalyticsReports />} />
         {pages.map(([path, title]) => (
           <Route
             key={path}

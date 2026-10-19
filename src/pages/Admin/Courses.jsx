@@ -2,19 +2,16 @@
 import { useMemo, useState } from 'react'
 import {
   BookOpen,
-  Clock,
-  Plus,
   Search,
+  Plus,
   Upload,
-  AlertTriangle,
-  TrendingUp,
-  CheckCircle,
   Pencil,
   Eye,
-  ChevronLeft,
-  ChevronRight,
   X,
-  RotateCcw,
+  CheckCircle,
+  AlertTriangle,
+  ChevronDown,
+  SlidersHorizontal,
 } from 'lucide-react'
 
 const initialCourses = [
@@ -26,12 +23,12 @@ const initialCourses = [
     flag: '🇦🇺',
     level: "Master's",
     field: 'Cyber Security',
-    duration: '2 Years Full-time',
-    tuition: 32000,
+    duration: '2 Years',
+    tuition: '32000',
     currency: 'AUD',
     ielts: '6.5',
-    status: 'Active',
     intake: 'Jan / Feb',
+    status: 'Active',
     featured: true,
   },
   {
@@ -43,11 +40,11 @@ const initialCourses = [
     level: "Master's",
     field: 'Information Technology',
     duration: '2 Years',
-    tuition: 28500,
+    tuition: '28500',
     currency: 'AUD',
-    ielts: '6.0+',
-    status: 'Active',
+    ielts: '6.0',
     intake: 'Jul / Aug',
+    status: 'Active',
     featured: false,
   },
   {
@@ -59,12 +56,12 @@ const initialCourses = [
     level: 'MSc',
     field: 'Data Science',
     duration: '1 Year',
-    tuition: 24000,
+    tuition: '24000',
     currency: 'GBP',
     ielts: '6.5',
-    status: 'Active',
     intake: 'Sep / Oct',
-    featured: true,
+    status: 'Active',
+    featured: false,
   },
   {
     id: 4,
@@ -74,12 +71,12 @@ const initialCourses = [
     flag: '🇦🇺',
     level: 'PhD',
     field: 'Computer Science',
-    duration: '3–4 Years',
-    tuition: 31000,
+    duration: '3-4 Years',
+    tuition: '31000',
     currency: 'AUD',
     ielts: '6.5',
-    status: 'Active',
     intake: 'Feb / Mar',
+    status: 'Active',
     featured: false,
   },
   {
@@ -89,13 +86,13 @@ const initialCourses = [
     country: 'Australia',
     flag: '🇦🇺',
     level: "Bachelor's",
-    field: 'Healthcare',
+    field: 'Nursing',
     duration: '3 Years',
-    tuition: 38000,
+    tuition: '38000',
     currency: 'AUD',
-    ielts: '7.0+',
+    ielts: '7.0',
+    intake: 'Jan / Feb',
     status: 'Active',
-    intake: 'Feb / Jul',
     featured: false,
   },
   {
@@ -105,13 +102,13 @@ const initialCourses = [
     country: 'Canada',
     flag: '🇨🇦',
     level: 'MSc',
-    field: 'Computing',
+    field: 'Computer Science',
     duration: '16 Months',
-    tuition: 28000,
+    tuition: '28000',
     currency: 'CAD',
-    ielts: '7.0+',
+    ielts: '7.0',
+    intake: 'Sep / Oct',
     status: 'Active',
-    intake: 'Sep / Jan',
     featured: false,
   },
   {
@@ -123,11 +120,11 @@ const initialCourses = [
     level: 'MBA',
     field: 'Business',
     duration: '2 Years',
-    tuition: 42000,
+    tuition: '42000',
     currency: 'CAD',
-    ielts: '6.5+',
+    ielts: '6.5',
+    intake: 'Jan / Feb',
     status: 'Active',
-    intake: 'Sep / Jan',
     featured: false,
   },
   {
@@ -139,11 +136,11 @@ const initialCourses = [
     level: "Master's",
     field: 'Cyber Security',
     duration: '2 Years',
-    tuition: 1500,
+    tuition: '1500',
     currency: 'EUR',
-    ielts: 'German B2',
+    ielts: '6.5',
+    intake: 'Oct / Nov',
     status: 'Active',
-    intake: 'Oct / Apr',
     featured: false,
   },
   {
@@ -155,11 +152,11 @@ const initialCourses = [
     level: "Bachelor's",
     field: 'Engineering',
     duration: '4 Years',
-    tuition: 34000,
+    tuition: '34000',
     currency: 'AUD',
-    ielts: '6.0+',
+    ielts: '6.0',
+    intake: 'Feb / Mar',
     status: 'Active',
-    intake: 'Feb / Jul',
     featured: false,
   },
   {
@@ -171,11 +168,11 @@ const initialCourses = [
     level: 'MSc',
     field: 'Cyber Security',
     duration: '1 Year',
-    tuition: 21000,
+    tuition: '21000',
     currency: 'GBP',
-    ielts: '7.0+',
+    ielts: '7.0',
+    intake: 'Sep / Oct',
     status: 'Active',
-    intake: 'Sep / Jan',
     featured: true,
   },
   {
@@ -187,11 +184,11 @@ const initialCourses = [
     level: 'Diploma',
     field: 'Information Technology',
     duration: '1 Year',
-    tuition: 12000,
+    tuition: '12000',
     currency: 'AUD',
-    ielts: '5.5+',
+    ielts: '5.5',
+    intake: 'Jan / Feb',
     status: 'Active',
-    intake: 'Feb / Jul',
     featured: false,
   },
   {
@@ -203,346 +200,43 @@ const initialCourses = [
     level: 'MSc',
     field: 'Computer Science',
     duration: '2 Years',
-    tuition: 25000,
+    tuition: '25000',
     currency: 'CAD',
     ielts: '6.5',
+    intake: 'Sep / Oct',
     status: 'Needs Update',
-    intake: 'Sep / Jan',
     featured: false,
   },
 ]
 
-const emptyCourse = {
-  title: '',
-  university: '',
-  country: 'Australia',
-  flag: '🇦🇺',
-  level: "Master's",
-  field: 'Information Technology',
-  duration: '',
-  tuition: '',
-  currency: 'AUD',
-  ielts: '6.5',
-  status: 'Active',
-  intake: 'Jan / Feb',
-  featured: false,
-}
+const inputClass =
+  'mt-1.5 w-full rounded-xl border border-slate-200 bg-[#EFF4FF] px-3 py-2.5 text-sm text-slate-800 outline-none transition focus:border-[#087653] focus:ring-2 focus:ring-emerald-100'
 
-const countries = [
-  'All Countries',
-  'Australia',
-  'Canada',
-  'United Kingdom',
-  'Germany',
-  'New Zealand',
-]
-
-const levels = [
-  'All Levels',
-  "Bachelor's",
-  "Master's",
-  'MSc',
-  'PhD',
-  'MBA',
-  'Diploma',
-]
-
-const fields = [
-  'All Fields',
-  'Cyber Security',
-  'Information Technology',
-  'Computer Science',
-  'Data Science',
-  'Healthcare',
-  'Business',
-  'Engineering',
-  'Computing',
-]
-
-function StatCard({ icon: Icon, label, value, note, tone = 'green' }) {
-  const tones = {
-    green: 'bg-emerald-100 text-emerald-800',
-    blue: 'bg-blue-100 text-blue-800',
-    red: 'bg-red-100 text-red-700',
-    amber: 'bg-amber-100 text-amber-800',
-  }
-
+function Field({ label, children }) {
   return (
-    <div className="rounded-2xl border border-slate-100 bg-white p-4 shadow-sm sm:p-5">
-      <div className="flex items-start justify-between gap-2">
-        <div>
-          <p className="text-xs font-medium text-slate-500">{label}</p>
-          <p className="mt-2 text-2xl font-bold text-[#075B3B] sm:text-3xl">
-            {value}
-          </p>
-        </div>
-        <div className={`rounded-xl p-2.5 ${tones[tone]}`}>
-          <Icon size={20} />
-        </div>
-      </div>
-      <p className="mt-2 text-xs text-slate-500">{note}</p>
-      <div className="mt-4 h-1.5 rounded-full bg-slate-100">
-        <div
-          className={`h-full rounded-full ${
-            tone === 'red' ? 'bg-red-500' : 'bg-[#087653]'
-          }`}
-          style={{ width: tone === 'red' ? '35%' : '78%' }}
-        />
-      </div>
-    </div>
+    <label className="block min-w-0 text-sm font-medium text-slate-700">
+      {label}
+      {children}
+    </label>
   )
 }
 
-function CourseForm({ course, onClose, onSave }) {
-  const [form, setForm] = useState(course)
-
-  function update(field, value) {
-    setForm((current) => ({ ...current, [field]: value }))
-  }
-
-  function handleSubmit(event) {
-    event.preventDefault()
-
-    if (
-      !form.title.trim() ||
-      !form.university.trim() ||
-      !form.duration.trim() ||
-      form.tuition === '' ||
-      Number(form.tuition) < 0
-    ) {
-      window.alert('Please complete all required fields with valid values.')
-      return
-    }
-
-    onSave({
-      ...form,
-      tuition: Number(form.tuition),
-      flag:
-        form.country === 'Australia'
-          ? '🇦🇺'
-          : form.country === 'Canada'
-            ? '🇨🇦'
-            : form.country === 'United Kingdom'
-              ? '🇬🇧'
-              : form.country === 'Germany'
-                ? '🇩🇪'
-                : '🇳🇿',
-    })
-  }
-
-  const inputClass =
-    'mt-1.5 w-full rounded-xl border border-slate-200 bg-[#F0F5FF] px-3 py-2.5 text-sm text-slate-800 outline-none transition focus:border-[#087653] focus:ring-2 focus:ring-emerald-100'
-
+function MetricCard({ label, value, note, icon: Icon, color }) {
   return (
-    <div className="fixed inset-0 z-[100] flex justify-end bg-slate-950/30">
-      <button
-        type="button"
-        aria-label="Close course form"
-        onClick={onClose}
-        className="absolute inset-0 cursor-default"
-      />
-
-      <section className="relative z-10 flex h-full w-full max-w-md flex-col bg-white shadow-2xl">
-        <header className="flex items-start justify-between border-b border-slate-100 bg-[#F0F5FF] p-5">
-          <div>
-            <h2 className="text-lg font-bold text-slate-900">
-              {course.id ? 'Edit Course' : 'Add Course'}
-            </h2>
-            <p className="mt-1 text-xs text-slate-500">
-              Update course and university information
-            </p>
-          </div>
-          <button
-            type="button"
-            onClick={onClose}
-            className="rounded-lg p-2 text-slate-500 hover:bg-white"
-          >
-            <X size={18} />
-          </button>
-        </header>
-
-        <form onSubmit={handleSubmit} className="flex-1 space-y-4 overflow-y-auto p-5">
-          <label className="block text-sm font-medium text-slate-700">
-            Course Title *
-            <input
-              className={inputClass}
-              value={form.title}
-              onChange={(e) => update('title', e.target.value)}
-              placeholder="e.g. Master of Cyber Security"
-              required
-            />
-          </label>
-
-          <label className="block text-sm font-medium text-slate-700">
-            University *
-            <input
-              className={inputClass}
-              value={form.university}
-              onChange={(e) => update('university', e.target.value)}
-              placeholder="University name"
-              required
-            />
-          </label>
-
-          <div className="grid grid-cols-2 gap-3">
-            <label className="block text-sm font-medium text-slate-700">
-              Country
-              <select
-                className={inputClass}
-                value={form.country}
-                onChange={(e) => update('country', e.target.value)}
-              >
-                {countries.slice(1).map((country) => (
-                  <option key={country}>{country}</option>
-                ))}
-              </select>
-            </label>
-
-            <label className="block text-sm font-medium text-slate-700">
-              Level
-              <select
-                className={inputClass}
-                value={form.level}
-                onChange={(e) => update('level', e.target.value)}
-              >
-                {levels.slice(1).map((level) => (
-                  <option key={level}>{level}</option>
-                ))}
-              </select>
-            </label>
-          </div>
-
-          <label className="block text-sm font-medium text-slate-700">
-            Field of Study
-            <select
-              className={inputClass}
-              value={form.field}
-              onChange={(e) => update('field', e.target.value)}
-            >
-              {fields.slice(1).map((field) => (
-                <option key={field}>{field}</option>
-              ))}
-            </select>
-          </label>
-
-          <div className="grid grid-cols-2 gap-3">
-            <label className="block text-sm font-medium text-slate-700">
-              Duration *
-              <input
-                className={inputClass}
-                value={form.duration}
-                onChange={(e) => update('duration', e.target.value)}
-                placeholder="2 Years Full-time"
-                required
-              />
-            </label>
-
-            <label className="block text-sm font-medium text-slate-700">
-              IELTS Requirement
-              <input
-                className={inputClass}
-                value={form.ielts}
-                onChange={(e) => update('ielts', e.target.value)}
-                placeholder="6.5"
-              />
-            </label>
-          </div>
-
-          <div className="grid grid-cols-[1fr_100px] gap-3">
-            <label className="block text-sm font-medium text-slate-700">
-              Tuition per Year *
-              <input
-                type="number"
-                min="0"
-                className={inputClass}
-                value={form.tuition}
-                onChange={(e) => update('tuition', e.target.value)}
-                placeholder="32000"
-                required
-              />
-            </label>
-
-            <label className="block text-sm font-medium text-slate-700">
-              Currency
-              <select
-                className={inputClass}
-                value={form.currency}
-                onChange={(e) => update('currency', e.target.value)}
-              >
-                {['AUD', 'CAD', 'GBP', 'EUR', 'NZD'].map((currency) => (
-                  <option key={currency}>{currency}</option>
-                ))}
-              </select>
-            </label>
-          </div>
-
-          <label className="block text-sm font-medium text-slate-700">
-            Available Intake
-            <select
-              className={inputClass}
-              value={form.intake}
-              onChange={(e) => update('intake', e.target.value)}
-            >
-              {['Jan / Feb', 'Mar / Apr', 'Jul / Aug', 'Sep / Oct'].map(
-                (intake) => (
-                  <option key={intake}>{intake}</option>
-                ),
-              )}
-            </select>
-          </label>
-
-          <label className="block text-sm font-medium text-slate-700">
-            Status
-            <select
-              className={inputClass}
-              value={form.status}
-              onChange={(e) => update('status', e.target.value)}
-            >
-              <option>Active</option>
-              <option>Needs Update</option>
-              <option>Inactive</option>
-            </select>
-          </label>
-
-          <label className="flex items-center justify-between rounded-xl bg-[#F0F5FF] p-3">
-            <span>
-              <span className="block text-sm font-semibold text-slate-800">
-                Featured Course
-              </span>
-              <span className="text-xs text-slate-500">
-                Highlight this course on public pages
-              </span>
-            </span>
-            <input
-              type="checkbox"
-              checked={Boolean(form.featured)}
-              onChange={(e) => update('featured', e.target.checked)}
-              className="h-4 w-4 accent-[#087653]"
-            />
-          </label>
-        </form>
-
-        <footer className="flex justify-end gap-3 border-t border-slate-100 p-4">
-          <button
-            type="button"
-            onClick={onClose}
-            className="rounded-xl border border-slate-200 px-4 py-2.5 text-sm font-semibold text-slate-700 hover:bg-slate-50"
-          >
-            Discard
-          </button>
-          <button
-            type="button"
-            onClick={() => {
-              const formElement = document.querySelector('#course-editor-form')
-              if (formElement) formElement.requestSubmit()
-            }}
-            className="inline-flex items-center gap-2 rounded-xl bg-[#075B3B] px-4 py-2.5 text-sm font-semibold text-white hover:bg-[#064A30]"
-          >
-            <CheckCircle size={16} />
-            Save Changes
-          </button>
-        </footer>
-      </section>
+    <div className="rounded-2xl border border-slate-100 bg-white p-4 shadow-sm sm:p-5">
+      <div className="flex items-start justify-between gap-2">
+        <div className={`rounded-xl p-2.5 ${color}`}>
+          <Icon size={20} />
+        </div>
+        <span className="rounded-full bg-emerald-100 px-2.5 py-1 text-xs font-medium text-emerald-800">
+          {note}
+        </span>
+      </div>
+      <p className="mt-4 text-2xl font-bold text-[#075B3B]">{value}</p>
+      <p className="mt-1 text-sm text-slate-500">{label}</p>
+      <div className="mt-4 h-1.5 rounded-full bg-slate-100">
+        <div className="h-1.5 w-3/4 rounded-full bg-[#087653]" />
+      </div>
     </div>
   )
 }
@@ -550,15 +244,14 @@ function CourseForm({ course, onClose, onSave }) {
 export default function Courses() {
   const [courses, setCourses] = useState(initialCourses)
   const [search, setSearch] = useState('')
-  const [country, setCountry] = useState('All Countries')
-  const [level, setLevel] = useState('All Levels')
-  const [field, setField] = useState('All Fields')
-  const [status, setStatus] = useState('All Statuses')
-  const [selected, setSelected] = useState([])
+  const [countryFilter, setCountryFilter] = useState('All Countries')
+  const [levelFilter, setLevelFilter] = useState('All Levels')
+  const [fieldFilter, setFieldFilter] = useState('All Fields')
+  const [statusFilter, setStatusFilter] = useState('All Statuses')
+  const [selectedIds, setSelectedIds] = useState([])
   const [editingCourse, setEditingCourse] = useState(null)
-  const [viewingCourse, setViewingCourse] = useState(null)
+  const [notice, setNotice] = useState('')
   const [page, setPage] = useState(1)
-  const pageSize = 12
 
   const filteredCourses = useMemo(() => {
     const query = search.trim().toLowerCase()
@@ -572,69 +265,114 @@ export default function Courses() {
 
       return (
         matchesSearch &&
-        (country === 'All Countries' || course.country === country) &&
-        (level === 'All Levels' || course.level === level) &&
-        (field === 'All Fields' || course.field === field) &&
-        (status === 'All Statuses' || course.status === status)
+        (countryFilter === 'All Countries' ||
+          course.country === countryFilter) &&
+        (levelFilter === 'All Levels' || course.level === levelFilter) &&
+        (fieldFilter === 'All Fields' || course.field === fieldFilter) &&
+        (statusFilter === 'All Statuses' || course.status === statusFilter)
       )
     })
-  }, [courses, search, country, level, field, status])
+  }, [
+    courses,
+    search,
+    countryFilter,
+    levelFilter,
+    fieldFilter,
+    statusFilter,
+  ])
 
-  const totalPages = Math.max(1, Math.ceil(filteredCourses.length / pageSize))
-  const currentPage = Math.min(page, totalPages)
+  const pageSize = 12
+  const pageCount = Math.max(1, Math.ceil(filteredCourses.length / pageSize))
   const visibleCourses = filteredCourses.slice(
-    (currentPage - 1) * pageSize,
-    currentPage * pageSize,
+    (page - 1) * pageSize,
+    page * pageSize,
   )
 
   const activeCount = courses.filter((course) => course.status === 'Active').length
-  const needsUpdateCount = courses.filter(
-    (course) => course.status === 'Needs Update',
+  const pendingCount = courses.filter(
+    (course) => course.status === 'Needs Update' || course.status === 'Pending',
   ).length
 
-  function resetFilters() {
-    setSearch('')
-    setCountry('All Countries')
-    setLevel('All Levels')
-    setField('All Fields')
-    setStatus('All Statuses')
+  function updateFilter(setter, value) {
+    setter(value)
     setPage(1)
   }
 
   function toggleSelected(id) {
-    setSelected((current) =>
+    setSelectedIds((current) =>
       current.includes(id)
         ? current.filter((item) => item !== id)
         : [...current, id],
     )
   }
 
-  function saveCourse(course) {
-    if (course.id) {
-      setCourses((current) =>
-        current.map((item) => (item.id === course.id ? course : item)),
-      )
-    } else {
-      setCourses((current) => [
-        { ...course, id: Date.now() },
-        ...current,
-      ])
-      setPage(1)
+  function toggleAllVisible(checked) {
+    setSelectedIds((current) => {
+      const visibleIds = visibleCourses.map((course) => course.id)
+      if (checked) return [...new Set([...current, ...visibleIds])]
+      return current.filter((id) => !visibleIds.includes(id))
+    })
+  }
+
+  function saveCourse(event) {
+    event.preventDefault()
+
+    if (!editingCourse) return
+
+    if (
+      !editingCourse.title.trim() ||
+      !editingCourse.university.trim() ||
+      !editingCourse.duration.trim() ||
+      !editingCourse.tuition.trim()
+    ) {
+      setNotice('Please complete all required fields.')
+      return
     }
 
+    setCourses((current) =>
+      current.map((course) =>
+        course.id === editingCourse.id ? { ...editingCourse } : course,
+      ),
+    )
+
+    setNotice(`"${editingCourse.title}" was updated successfully.`)
     setEditingCourse(null)
   }
 
+  function addCourse() {
+    const newCourse = {
+      id: Math.max(0, ...courses.map((course) => course.id)) + 1,
+      title: 'New Course',
+      university: '',
+      country: 'Australia',
+      flag: '🇦🇺',
+      level: "Master's",
+      field: 'Computer Science',
+      duration: '2 Years',
+      tuition: '25000',
+      currency: 'AUD',
+      ielts: '6.5',
+      intake: 'Jan / Feb',
+      status: 'Active',
+      featured: false,
+    }
+
+    setEditingCourse(newCourse)
+    setNotice('')
+  }
+
   function exportCourses() {
-    const headers = [
-      'Title',
+    const header = [
+      'Course Title',
       'University',
       'Country',
       'Level',
       'Field',
+      'Duration',
       'Tuition',
       'Currency',
       'IELTS',
+      'Intake',
       'Status',
     ]
 
@@ -644,66 +382,71 @@ export default function Courses() {
       course.country,
       course.level,
       course.field,
+      course.duration,
       course.tuition,
       course.currency,
       course.ielts,
+      course.intake,
       course.status,
     ])
 
-    const csv = [headers, ...rows]
+    const csv = [header, ...rows]
       .map((row) =>
         row
-          .map((value) => `"${String(value ?? '').replaceAll('"', '""')}"`)
+          .map((value) => `"${String(value).replaceAll('"', '""')}"`)
           .join(','),
       )
       .join('\n')
 
-    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' })
-    const url = URL.createObjectURL(blob)
-    const link = document.createElement('a')
-    link.href = url
-    link.download = 'agency-courses.csv'
-    link.click()
+    const url = URL.createObjectURL(
+      new Blob([csv], { type: 'text/csv;charset=utf-8;' }),
+    )
+    const anchor = document.createElement('a')
+    anchor.href = url
+    anchor.download = 'agency-courses.csv'
+    anchor.click()
     URL.revokeObjectURL(url)
   }
 
+  function updateEditing(field, value) {
+    setEditingCourse((current) => ({ ...current, [field]: value }))
+  }
+
   return (
-    <div className="min-w-0 space-y-5 text-slate-800">
-      {/* Page heading */}
-      <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
-        <div className="flex items-start gap-3">
-          <div className="rounded-xl bg-emerald-100 p-3 text-[#087653]">
-            <BookOpen size={22} />
+    <div className="min-h-full bg-[#F0F7F4] text-slate-900">
+      <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
+        <div>
+          <div className="mb-1 flex items-center gap-2 text-xs text-slate-500">
+            <span>Agency</span>
+            <span>/</span>
+            <span>Admin</span>
+            <span>/</span>
+            <span className="font-semibold text-[#075B3B]">Overview</span>
           </div>
-          <div>
-            <div className="flex flex-wrap items-center gap-2">
-              <h1 className="text-2xl font-bold tracking-tight text-slate-900">
-                Course Management
-              </h1>
-              <span className="rounded-full bg-emerald-100 px-2.5 py-1 text-xs font-semibold text-[#087653]">
-                Institutional Database
-              </span>
+          <div className="flex items-center gap-3">
+            <div className="rounded-xl bg-emerald-100 p-2 text-[#087653]">
+              <BookOpen size={21} />
             </div>
-            <p className="mt-1 max-w-2xl text-sm text-slate-500">
-              Manage all listed courses, degrees, and certified credentials
-              across global partner universities.
-            </p>
+            <div>
+              <h1 className="text-2xl font-bold">Course Management</h1>
+              <p className="mt-1 text-sm text-slate-500">
+                Manage courses, degrees, and university information.
+              </p>
+            </div>
           </div>
         </div>
 
-        <div className="flex flex-wrap gap-2">
+        <div className="flex gap-2">
           <button
-            type="button"
             onClick={exportCourses}
-            className="inline-flex items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 hover:bg-slate-50"
+            className="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold hover:bg-slate-50"
           >
             <Upload size={16} />
             Export CSV
           </button>
           <button
-            type="button"
-            onClick={() => setEditingCourse({ ...emptyCourse })}
-            className="inline-flex items-center justify-center gap-2 rounded-xl bg-[#075B3B] px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-[#064A30]"
+            onClick={addCourse}
+            className="inline-flex items-center gap-2 rounded-xl bg-[#075B3B] px-4 py-2.5 text-sm font-semibold text-white hover:bg-[#06492F]"
           >
             <Plus size={17} />
             Add Course
@@ -711,265 +454,223 @@ export default function Courses() {
         </div>
       </div>
 
-      {/* Summary cards */}
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
-        <StatCard
-          icon={BookOpen}
+      {notice && (
+        <div
+          className={`mb-4 flex items-center justify-between gap-3 rounded-xl border px-4 py-3 text-sm ${
+            notice.includes('successfully')
+              ? 'border-emerald-200 bg-emerald-50 text-emerald-800'
+              : 'border-amber-200 bg-amber-50 text-amber-800'
+          }`}
+        >
+          <span>{notice}</span>
+          <button onClick={() => setNotice('')} aria-label="Dismiss message">
+            <X size={16} />
+          </button>
+        </div>
+      )}
+
+      <div className="mb-5 grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
+        <MetricCard
           label="Total Courses"
           value={courses.length.toLocaleString()}
-          note="↗ +3.8% this quarter"
-          tone="green"
+          note="+3.8% this quarter"
+          icon={BookOpen}
+          color="bg-emerald-100 text-emerald-800"
         />
-        <StatCard
-          icon={Clock}
+        <MetricCard
           label="Pending Review"
-          value={needsUpdateCount}
-          note="Needs attention from the admin team"
-          tone="red"
-        />
-        <StatCard
-          icon={TrendingUp}
-          label="Added This Month"
-          value={Math.max(0, courses.length - initialCourses.length)}
-          note="New course entries"
-          tone="blue"
-        />
-        <StatCard
+          value={pendingCount}
+          note="Requires review"
           icon={AlertTriangle}
-          label="Needs Update"
-          value={needsUpdateCount}
-          note="Check fees and admission requirements"
-          tone="amber"
+          color="bg-red-100 text-red-700"
+        />
+        <MetricCard
+          label="Active Courses"
+          value={activeCount}
+          note="Published"
+          icon={CheckCircle}
+          color="bg-blue-100 text-blue-800"
+        />
+        <MetricCard
+          label="Fields of Study"
+          value={new Set(courses.map((course) => course.field)).size}
+          note="Across all courses"
+          icon={SlidersHorizontal}
+          color="bg-violet-100 text-violet-800"
         />
       </div>
 
-      {/* Search and filters */}
-      <section className="rounded-2xl border border-slate-100 bg-white p-3 shadow-sm">
-        <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 xl:grid-cols-6">
-          <label className="relative sm:col-span-2 xl:col-span-2">
+      <section className="overflow-hidden rounded-2xl border border-slate-100 bg-white shadow-sm">
+        <div className="grid grid-cols-1 gap-3 border-b border-slate-100 p-4 md:grid-cols-2 xl:grid-cols-5">
+          <label className="relative xl:col-span-2">
             <Search
               size={17}
               className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
             />
             <input
               value={search}
-              onChange={(e) => {
-                setSearch(e.target.value)
-                setPage(1)
-              }}
+              onChange={(event) => updateFilter(setSearch, event.target.value)}
               placeholder="Search course title or university..."
-              className="w-full rounded-xl border border-slate-100 bg-[#F0F5FF] py-2.5 pl-9 pr-3 text-sm outline-none focus:border-[#087653]"
+              className="w-full rounded-xl border border-slate-200 bg-[#EFF4FF] py-2.5 pl-9 pr-3 text-sm outline-none focus:border-[#087653]"
             />
           </label>
 
           <select
-            value={country}
-            onChange={(e) => {
-              setCountry(e.target.value)
-              setPage(1)
-            }}
-            className="rounded-xl border border-transparent bg-[#F0F5FF] px-3 py-2.5 text-sm outline-none focus:border-[#087653]"
+            value={countryFilter}
+            onChange={(event) =>
+              updateFilter(setCountryFilter, event.target.value)
+            }
+            className="rounded-xl border border-slate-200 bg-[#EFF4FF] px-3 py-2.5 text-sm outline-none"
           >
-            {countries.map((item) => (
-              <option key={item}>{item}</option>
+            {[
+              'All Countries',
+              ...new Set(courses.map((course) => course.country)),
+            ].map((country) => (
+              <option key={country}>{country}</option>
             ))}
           </select>
 
           <select
-            value={level}
-            onChange={(e) => {
-              setLevel(e.target.value)
-              setPage(1)
-            }}
-            className="rounded-xl border border-transparent bg-[#F0F5FF] px-3 py-2.5 text-sm outline-none focus:border-[#087653]"
+            value={levelFilter}
+            onChange={(event) => updateFilter(setLevelFilter, event.target.value)}
+            className="rounded-xl border border-slate-200 bg-[#EFF4FF] px-3 py-2.5 text-sm outline-none"
           >
-            {levels.map((item) => (
-              <option key={item}>{item}</option>
+            {[
+              'All Levels',
+              ...new Set(courses.map((course) => course.level)),
+            ].map((level) => (
+              <option key={level}>{level}</option>
             ))}
           </select>
 
           <select
-            value={field}
-            onChange={(e) => {
-              setField(e.target.value)
-              setPage(1)
-            }}
-            className="rounded-xl border border-transparent bg-[#F0F5FF] px-3 py-2.5 text-sm outline-none focus:border-[#087653]"
+            value={fieldFilter}
+            onChange={(event) => updateFilter(setFieldFilter, event.target.value)}
+            className="rounded-xl border border-slate-200 bg-[#EFF4FF] px-3 py-2.5 text-sm outline-none"
           >
-            {fields.map((item) => (
-              <option key={item}>{item}</option>
+            {[
+              'All Fields',
+              ...new Set(courses.map((course) => course.field)),
+            ].map((field) => (
+              <option key={field}>{field}</option>
             ))}
           </select>
 
           <select
-            value={status}
-            onChange={(e) => {
-              setStatus(e.target.value)
-              setPage(1)
-            }}
-            className="rounded-xl border border-transparent bg-[#F0F5FF] px-3 py-2.5 text-sm outline-none focus:border-[#087653]"
+            value={statusFilter}
+            onChange={(event) => updateFilter(setStatusFilter, event.target.value)}
+            className="rounded-xl border border-slate-200 bg-[#EFF4FF] px-3 py-2.5 text-sm outline-none"
           >
-            {['All Statuses', 'Active', 'Needs Update', 'Inactive'].map(
-              (item) => (
-                <option key={item}>{item}</option>
+            {['All Statuses', 'Active', 'Pending', 'Needs Update', 'Inactive'].map(
+              (status) => (
+                <option key={status}>{status}</option>
               ),
             )}
           </select>
         </div>
 
-        <div className="mt-3 flex flex-wrap items-center justify-between gap-2">
-          <p className="text-xs text-slate-500">
-            Showing {filteredCourses.length} matching course
-            {filteredCourses.length === 1 ? '' : 's'}
-          </p>
-          <button
-            type="button"
-            onClick={resetFilters}
-            className="inline-flex items-center gap-1.5 rounded-lg bg-blue-50 px-3 py-2 text-xs font-semibold text-slate-700 hover:bg-blue-100"
-          >
-            <RotateCcw size={14} />
-            Reset Filters
-          </button>
-        </div>
-      </section>
-
-      {/* Courses table */}
-      <section className="overflow-hidden rounded-2xl border border-slate-100 bg-white shadow-sm">
         <div className="overflow-x-auto">
-          <table className="w-full min-w-[1000px] border-collapse text-left">
-            <thead>
-              <tr className="bg-[#EEF3FF] text-[11px] uppercase tracking-wide text-slate-600">
-                <th className="w-12 px-4 py-4">
+          <table className="w-full min-w-[850px] text-left text-sm">
+            <thead className="bg-[#EDF2FF] text-xs uppercase tracking-wide text-slate-700">
+              <tr>
+                <th className="px-4 py-4">
                   <input
                     type="checkbox"
-                    aria-label="Select all visible courses"
                     checked={
                       visibleCourses.length > 0 &&
                       visibleCourses.every((course) =>
-                        selected.includes(course.id),
+                        selectedIds.includes(course.id),
                       )
                     }
-                    onChange={(e) =>
-                      setSelected((current) =>
-                        e.target.checked
-                          ? Array.from(
-                              new Set([
-                                ...current,
-                                ...visibleCourses.map((course) => course.id),
-                              ]),
-                            )
-                          : current.filter(
-                              (id) =>
-                                !visibleCourses.some(
-                                  (course) => course.id === id,
-                                ),
-                            ),
-                      )
-                    }
-                    className="h-4 w-4 accent-[#087653]"
+                    onChange={(event) => toggleAllVisible(event.target.checked)}
+                    aria-label="Select visible courses"
                   />
                 </th>
-                <th className="px-3 py-4">Course Title</th>
-                <th className="px-3 py-4">University</th>
-                <th className="px-3 py-4">Country</th>
-                <th className="px-3 py-4">Level</th>
-                <th className="px-3 py-4">Tuition Fee</th>
-                <th className="px-3 py-4">IELTS / Lang</th>
-                <th className="px-3 py-4">Status</th>
-                <th className="px-4 py-4 text-center">Actions</th>
+                <th className="px-4 py-4">Course Title</th>
+                <th className="px-4 py-4">University</th>
+                <th className="px-4 py-4">Country</th>
+                <th className="px-4 py-4">Level</th>
+                <th className="px-4 py-4">Tuition / Year</th>
+                <th className="px-4 py-4">IELTS</th>
+                <th className="px-4 py-4">Status</th>
+                <th className="px-4 py-4">Actions</th>
               </tr>
             </thead>
 
-            <tbody>
+            <tbody className="divide-y divide-slate-100">
               {visibleCourses.map((course) => (
                 <tr
                   key={course.id}
-                  className={`border-t border-slate-100 text-sm hover:bg-slate-50 ${
+                  className={`transition hover:bg-slate-50 ${
                     course.status === 'Needs Update' ? 'bg-red-50/40' : ''
                   }`}
                 >
                   <td className="px-4 py-4">
                     <input
                       type="checkbox"
-                      checked={selected.includes(course.id)}
+                      checked={selectedIds.includes(course.id)}
                       onChange={() => toggleSelected(course.id)}
                       aria-label={`Select ${course.title}`}
-                      className="h-4 w-4 accent-[#087653]"
                     />
                   </td>
-
-                  <td className="max-w-56 px-3 py-4">
-                    <div className="font-semibold text-slate-800">
-                      {course.title}
-                    </div>
-                    <div className="mt-1 text-xs text-slate-400">
-                      {course.duration}
-                    </div>
+                  <td className="px-4 py-4">
+                    <p className="font-semibold text-slate-900">{course.title}</p>
+                    <p className="mt-1 text-xs text-slate-500">{course.duration}</p>
                     {course.featured && (
-                      <span className="mt-1 inline-block rounded-full bg-blue-50 px-2 py-0.5 text-[10px] font-medium text-blue-700">
+                      <span className="mt-1 inline-flex rounded-full bg-blue-100 px-2 py-0.5 text-xs text-blue-800">
                         Featured
                       </span>
                     )}
                   </td>
-
-                  <td className="max-w-44 px-3 py-4 text-slate-600">
-                    {course.university}
-                  </td>
-
-                  <td className="px-3 py-4">
+                  <td className="px-4 py-4 text-slate-700">{course.university}</td>
+                  <td className="px-4 py-4">
                     <span className="mr-1.5">{course.flag}</span>
-                    <span className="text-xs">{course.country}</span>
+                    {course.country}
                   </td>
-
-                  <td className="px-3 py-4">
-                    <span className="rounded-full bg-blue-50 px-2 py-1 text-xs font-medium text-slate-700">
+                  <td className="px-4 py-4">
+                    <span className="rounded-full bg-slate-100 px-2.5 py-1 text-xs">
                       {course.level}
                     </span>
                   </td>
-
-                  <td className="whitespace-nowrap px-3 py-4 font-medium text-[#075B3B]">
-                    {course.currency} {Number(course.tuition).toLocaleString()}
-                    <span className="text-xs text-slate-400">/yr</span>
+                  <td className="whitespace-nowrap px-4 py-4 font-medium text-[#075B3B]">
+                    {course.currency} {Number(course.tuition || 0).toLocaleString()}
                   </td>
-
-                  <td className="px-3 py-4">
-                    <span className="rounded bg-blue-50 px-2 py-1 text-xs text-slate-700">
-                      {course.ielts || '—'}
-                    </span>
-                  </td>
-
-                  <td className="px-3 py-4">
+                  <td className="px-4 py-4">{course.ielts}</td>
+                  <td className="px-4 py-4">
                     <span
-                      className={`inline-flex items-center gap-1 whitespace-nowrap rounded-full px-2.5 py-1 text-[11px] font-semibold ${
+                      className={`inline-flex rounded-full px-2.5 py-1 text-xs font-medium ${
                         course.status === 'Active'
                           ? 'bg-emerald-100 text-emerald-800'
                           : course.status === 'Needs Update'
-                            ? 'bg-red-100 text-red-700'
-                            : 'bg-slate-100 text-slate-600'
+                            ? 'bg-red-100 text-red-800'
+                            : 'bg-amber-100 text-amber-800'
                       }`}
                     >
-                      <span className="h-1.5 w-1.5 rounded-full bg-current" />
                       {course.status}
                     </span>
                   </td>
-
                   <td className="px-4 py-4">
-                    <div className="flex items-center justify-center gap-1">
+                    <div className="flex items-center gap-2">
                       <button
-                        type="button"
-                        onClick={() => setEditingCourse({ ...course })}
+                        onClick={() => {
+                          setEditingCourse({ ...course })
+                          setNotice('')
+                        }}
+                        className="rounded-lg p-2 text-slate-600 hover:bg-emerald-50 hover:text-[#087653]"
                         title="Edit course"
                         aria-label={`Edit ${course.title}`}
-                        className="rounded-lg p-2 text-slate-600 hover:bg-emerald-50 hover:text-[#087653]"
                       >
-                        <Pencil size={15} />
+                        <Pencil size={16} />
                       </button>
                       <button
-                        type="button"
-                        onClick={() => setViewingCourse(course)}
-                        title="View course"
+                        onClick={() => {
+                          setNotice(
+                            `${course.title} — ${course.university}, ${course.country}. Status: ${course.status}.`,
+                          )
+                        }}
+                        className="rounded-lg p-2 text-slate-600 hover:bg-blue-50"
+                        title="View course details"
                         aria-label={`View ${course.title}`}
-                        className="rounded-lg p-2 text-slate-600 hover:bg-blue-50 hover:text-blue-700"
                       >
                         <Eye size={16} />
                       </button>
@@ -980,11 +681,8 @@ export default function Courses() {
 
               {visibleCourses.length === 0 && (
                 <tr>
-                  <td
-                    colSpan={9}
-                    className="px-6 py-14 text-center text-sm text-slate-500"
-                  >
-                    No courses match your search or filters.
+                  <td colSpan={9} className="px-4 py-12 text-center text-slate-500">
+                    No courses match your filters.
                   </td>
                 </tr>
               )}
@@ -992,154 +690,303 @@ export default function Courses() {
           </table>
         </div>
 
-        {/* Pagination */}
-        <div className="flex flex-col gap-3 border-t border-slate-100 px-4 py-4 sm:flex-row sm:items-center sm:justify-between">
-          <p className="text-xs text-slate-500">
+        <div className="flex flex-wrap items-center justify-between gap-3 border-t border-slate-100 px-4 py-4">
+          <div className="text-sm text-slate-500">
             Showing{' '}
-            {filteredCourses.length === 0
-              ? 0
-              : (currentPage - 1) * pageSize + 1}
-            –
-            {Math.min(currentPage * pageSize, filteredCourses.length)} of{' '}
-            {filteredCourses.length.toLocaleString()} courses
-          </p>
+            <span className="font-semibold text-slate-800">
+              {filteredCourses.length === 0
+                ? 0
+                : (page - 1) * pageSize + 1}
+              –
+              {Math.min(page * pageSize, filteredCourses.length)}
+            </span>{' '}
+            of {filteredCourses.length} courses
+            {selectedIds.length > 0 && (
+              <span className="ml-2 text-[#087653]">
+                · {selectedIds.length} selected
+              </span>
+            )}
+          </div>
 
-          <div className="flex items-center gap-1">
+          <div className="flex items-center gap-2">
             <button
-              type="button"
-              disabled={currentPage === 1}
-              onClick={() => setPage((value) => Math.max(1, value - 1))}
-              className="rounded-lg border border-slate-200 p-2 text-slate-600 hover:bg-slate-50 disabled:opacity-40"
+              disabled={page === 1}
+              onClick={() => setPage((current) => current - 1)}
+              className="rounded-lg border border-slate-200 px-3 py-2 text-sm disabled:opacity-40"
             >
-              <ChevronLeft size={16} />
+              Previous
             </button>
-
-            {Array.from({ length: totalPages }, (_, index) => index + 1)
-              .slice(
-                Math.max(0, Math.min(currentPage - 2, totalPages - 3)),
-                Math.max(0, Math.min(currentPage - 2, totalPages - 3)) + 3,
-              )
-              .map((pageNumber) => (
-                <button
-                  type="button"
-                  key={pageNumber}
-                  onClick={() => setPage(pageNumber)}
-                  className={`min-w-9 rounded-lg px-3 py-2 text-xs font-semibold ${
-                    currentPage === pageNumber
-                      ? 'bg-[#075B3B] text-white'
-                      : 'border border-slate-200 bg-white text-slate-700 hover:bg-slate-50'
-                  }`}
-                >
-                  {pageNumber}
-                </button>
-              ))}
-
+            <span className="rounded-lg bg-[#075B3B] px-3 py-2 text-sm font-semibold text-white">
+              {page}
+            </span>
             <button
-              type="button"
-              disabled={currentPage === totalPages}
-              onClick={() =>
-                setPage((value) => Math.min(totalPages, value + 1))
-              }
-              className="rounded-lg border border-slate-200 p-2 text-slate-600 hover:bg-slate-50 disabled:opacity-40"
+              disabled={page >= pageCount}
+              onClick={() => setPage((current) => current + 1)}
+              className="rounded-lg border border-slate-200 px-3 py-2 text-sm disabled:opacity-40"
             >
-              <ChevronRight size={16} />
+              Next
             </button>
           </div>
         </div>
       </section>
 
-      {/* Course details panel */}
-      {viewingCourse && (
-        <div className="fixed inset-0 z-[100] flex justify-end bg-slate-950/30">
+      {editingCourse && (
+        <div className="fixed inset-0 z-[100] flex justify-end">
           <button
             type="button"
-            aria-label="Close course details"
-            onClick={() => setViewingCourse(null)}
-            className="absolute inset-0"
+            aria-label="Close edit panel"
+            onClick={() => setEditingCourse(null)}
+            className="absolute inset-0 bg-slate-950/30"
           />
-          <section className="relative z-10 h-full w-full max-w-md overflow-y-auto bg-white p-6 shadow-2xl">
-            <div className="flex items-start justify-between">
+
+          <aside className="relative z-10 flex h-full w-full max-w-xl flex-col bg-white shadow-2xl">
+            <div className="flex items-start justify-between border-b border-slate-100 px-5 py-5 sm:px-6">
               <div>
                 <h2 className="text-xl font-bold text-slate-900">
-                  Course Details
+                  {courses.some((course) => course.id === editingCourse.id)
+                    ? 'Edit Course'
+                    : 'Add Course'}
                 </h2>
                 <p className="mt-1 text-sm text-slate-500">
-                  Review the selected course
+                  Update course and university information
                 </p>
               </div>
               <button
-                type="button"
-                onClick={() => setViewingCourse(null)}
+                onClick={() => setEditingCourse(null)}
                 className="rounded-lg p-2 text-slate-500 hover:bg-slate-100"
+                aria-label="Close"
               >
-                <X size={18} />
+                <X size={20} />
               </button>
             </div>
 
-            <div className="mt-6 rounded-2xl bg-[#F0F5FF] p-5">
-              <div className="text-3xl">{viewingCourse.flag}</div>
-              <h3 className="mt-3 text-lg font-bold text-slate-900">
-                {viewingCourse.title}
-              </h3>
-              <p className="mt-1 text-sm text-slate-600">
-                {viewingCourse.university}
-              </p>
-              <span className="mt-3 inline-block rounded-full bg-emerald-100 px-3 py-1 text-xs font-semibold text-[#087653]">
-                {viewingCourse.status}
-              </span>
-            </div>
-
-            <dl className="mt-5 space-y-4">
-              {[
-                ['Country', viewingCourse.country],
-                ['Level', viewingCourse.level],
-                ['Field of Study', viewingCourse.field],
-                ['Duration', viewingCourse.duration],
-                [
-                  'Annual Tuition',
-                  `${viewingCourse.currency} ${Number(
-                    viewingCourse.tuition,
-                  ).toLocaleString()}`,
-                ],
-                ['IELTS Requirement', viewingCourse.ielts || 'Not specified'],
-                ['Intake', viewingCourse.intake],
-                ['Featured', viewingCourse.featured ? 'Yes' : 'No'],
-              ].map(([label, value]) => (
-                <div
-                  key={label}
-                  className="flex items-start justify-between gap-4 border-b border-slate-100 pb-3"
-                >
-                  <dt className="text-sm text-slate-500">{label}</dt>
-                  <dd className="text-right text-sm font-semibold text-slate-800">
-                    {value}
-                  </dd>
-                </div>
-              ))}
-            </dl>
-
-            <button
-              type="button"
-              onClick={() => {
-                setEditingCourse({ ...viewingCourse })
-                setViewingCourse(null)
-              }}
-              className="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-[#075B3B] px-4 py-3 text-sm font-semibold text-white hover:bg-[#064A30]"
+            <form
+              onSubmit={saveCourse}
+              className="flex min-h-0 flex-1 flex-col"
             >
-              <Pencil size={16} />
-              Edit Course
-            </button>
-          </section>
-        </div>
-      )}
+              <div className="flex-1 space-y-4 overflow-y-auto p-5 sm:p-6">
+                <Field label="Course Title *">
+                  <input
+                    required
+                    value={editingCourse.title}
+                    onChange={(event) => updateEditing('title', event.target.value)}
+                    className={inputClass}
+                  />
+                </Field>
 
-      {/* Add/edit course panel */}
-      {editingCourse && (
-        <CourseForm
-          key={editingCourse.id || 'new-course'}
-          course={editingCourse}
-          onClose={() => setEditingCourse(null)}
-          onSave={saveCourse}
-        />
+                <Field label="University *">
+                  <input
+                    required
+                    value={editingCourse.university}
+                    onChange={(event) =>
+                      updateEditing('university', event.target.value)
+                    }
+                    className={inputClass}
+                  />
+                </Field>
+
+                <div className="grid grid-cols-2 gap-3">
+                  <Field label="Country">
+                    <select
+                      value={editingCourse.country}
+                      onChange={(event) => {
+                        const country = event.target.value
+                        const flags = {
+                          Australia: '🇦🇺',
+                          Canada: '🇨🇦',
+                          'United Kingdom': '🇬🇧',
+                          Germany: '🇩🇪',
+                          Ireland: '🇮🇪',
+                          'New Zealand': '🇳🇿',
+                          Singapore: '🇸🇬',
+                          USA: '🇺🇸',
+                        }
+                        setEditingCourse((current) => ({
+                          ...current,
+                          country,
+                          flag: flags[country] || '🌍',
+                        }))
+                      }}
+                      className={inputClass}
+                    >
+                      {[
+                        'Australia',
+                        'Canada',
+                        'United Kingdom',
+                        'Germany',
+                        'Ireland',
+                        'New Zealand',
+                        'Singapore',
+                        'USA',
+                      ].map((country) => (
+                        <option key={country}>{country}</option>
+                      ))}
+                    </select>
+                  </Field>
+
+                  <Field label="Level">
+                    <select
+                      value={editingCourse.level}
+                      onChange={(event) => updateEditing('level', event.target.value)}
+                      className={inputClass}
+                    >
+                      {[
+                        "Bachelor's",
+                        "Master's",
+                        'MSc',
+                        'MBA',
+                        'PhD',
+                        'Diploma',
+                      ].map((level) => (
+                        <option key={level}>{level}</option>
+                      ))}
+                    </select>
+                  </Field>
+                </div>
+
+                <Field label="Field of Study">
+                  <select
+                    value={editingCourse.field}
+                    onChange={(event) => updateEditing('field', event.target.value)}
+                    className={inputClass}
+                  >
+                    {[
+                      'Computer Science',
+                      'Cyber Security',
+                      'Information Technology',
+                      'Data Science',
+                      'Business',
+                      'Nursing',
+                      'Engineering',
+                      'Health Sciences',
+                    ].map((field) => (
+                      <option key={field}>{field}</option>
+                    ))}
+                  </select>
+                </Field>
+
+                <div className="grid grid-cols-2 gap-3">
+                  <Field label="Duration *">
+                    <input
+                      required
+                      value={editingCourse.duration}
+                      onChange={(event) =>
+                        updateEditing('duration', event.target.value)
+                      }
+                      className={inputClass}
+                    />
+                  </Field>
+                  <Field label="IELTS Requirement">
+                    <input
+                      value={editingCourse.ielts}
+                      onChange={(event) => updateEditing('ielts', event.target.value)}
+                      className={inputClass}
+                    />
+                  </Field>
+                </div>
+
+                <div className="grid grid-cols-[1fr_110px] gap-3">
+                  <Field label="Tuition per Year *">
+                    <input
+                      required
+                      type="number"
+                      min="0"
+                      value={editingCourse.tuition}
+                      onChange={(event) =>
+                        updateEditing('tuition', event.target.value)
+                      }
+                      className={inputClass}
+                    />
+                  </Field>
+                  <Field label="Currency">
+                    <select
+                      value={editingCourse.currency}
+                      onChange={(event) =>
+                        updateEditing('currency', event.target.value)
+                      }
+                      className={inputClass}
+                    >
+                      {['AUD', 'CAD', 'GBP', 'EUR', 'USD', 'NZD', 'SGD'].map(
+                        (currency) => (
+                          <option key={currency}>{currency}</option>
+                        ),
+                      )}
+                    </select>
+                  </Field>
+                </div>
+
+                <Field label="Available Intake">
+                  <select
+                    value={editingCourse.intake}
+                    onChange={(event) => updateEditing('intake', event.target.value)}
+                    className={inputClass}
+                  >
+                    {[
+                      'Jan / Feb',
+                      'Mar / Apr',
+                      'May / Jun',
+                      'Jul / Aug',
+                      'Sep / Oct',
+                      'Oct / Nov',
+                    ].map((intake) => (
+                      <option key={intake}>{intake}</option>
+                    ))}
+                  </select>
+                </Field>
+
+                <Field label="Status">
+                  <select
+                    value={editingCourse.status}
+                    onChange={(event) => updateEditing('status', event.target.value)}
+                    className={inputClass}
+                  >
+                    {['Active', 'Pending', 'Needs Update', 'Inactive'].map(
+                      (status) => (
+                        <option key={status}>{status}</option>
+                      ),
+                    )}
+                  </select>
+                </Field>
+
+                <label className="flex cursor-pointer items-center justify-between rounded-xl bg-[#EFF4FF] p-4">
+                  <span>
+                    <span className="block text-sm font-semibold text-slate-800">
+                      Featured Course
+                    </span>
+                    <span className="mt-1 block text-xs text-slate-500">
+                      Highlight this course on public pages
+                    </span>
+                  </span>
+                  <input
+                    type="checkbox"
+                    checked={editingCourse.featured}
+                    onChange={(event) =>
+                      updateEditing('featured', event.target.checked)
+                    }
+                    className="h-4 w-4 accent-[#087653]"
+                  />
+                </label>
+              </div>
+
+              <div className="flex justify-end gap-3 border-t border-slate-100 bg-white p-4 sm:px-6">
+                <button
+                  type="button"
+                  onClick={() => setEditingCourse(null)}
+                  className="rounded-xl border border-slate-200 px-4 py-2.5 text-sm font-semibold text-slate-700 hover:bg-slate-50"
+                >
+                  Discard
+                </button>
+                <button
+                  type="submit"
+                  className="inline-flex items-center gap-2 rounded-xl bg-[#075B3B] px-5 py-2.5 text-sm font-semibold text-white hover:bg-[#06492F]"
+                >
+                  <CheckCircle size={16} />
+                  Save Changes
+                </button>
+              </div>
+            </form>
+          </aside>
+        </div>
       )}
     </div>
   )

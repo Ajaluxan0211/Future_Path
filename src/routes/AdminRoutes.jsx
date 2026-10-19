@@ -9,6 +9,7 @@ import ScamReports from '../pages/admin/ScamReports'
 import Countries from '../pages/admin/Countries'
 import Visas from '../pages/admin/Visas'
 import Courses from '../pages/admin/Courses'
+import Universities from '../pages/admin/Universities'
 
 function ComingSoon({ title }) {
   return (
@@ -60,6 +61,7 @@ export default function AdminRoutes() {
  <Route path="countries" element={<Countries />} />
  <Route path="visas" element={<Visas/>} />
  <Route path="courses" element={<Courses />} />
+ <Route path="universities" element={<Universities />} />
 
         {pages.map(([path, title]) => (
           <Route

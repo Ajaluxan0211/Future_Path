@@ -13,7 +13,8 @@ import Universities from '../pages/admin/Universities'
 import Scholarships from '../pages/admin/Scholarships'
 import SuccessStories from '../pages/admin/SuccessStories'
 import AnalyticsReports from '../pages/admin/AnalyticsReports'
-
+import Notifications from '../pages/admin/Notifications'
+import AdminUsersRoles from '../pages/admin/AdminUsersRoles'
 function ComingSoon({ title }) {
   return (
     <section className="rounded-2xl border border-slate-200 bg-white p-8">
@@ -68,6 +69,12 @@ export default function AdminRoutes() {
  <Route path="scholarships" element={<Scholarships />} />
  <Route path="stories" element={<SuccessStories />} />
         <Route path="analytics" element={<AnalyticsReports />} />
+         <Route path="notifications" element={<Notifications />} />
+         <Route
+  path="admin-users"
+  element={<AdminUsersRoles />}
+/>
+         
         {pages.map(([path, title]) => (
           <Route
             key={path}

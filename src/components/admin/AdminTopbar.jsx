@@ -1,7 +1,9 @@
+
 import { useState } from 'react'
-import { Search, ChevronDown } from 'lucide-react'
+import { Search } from 'lucide-react'
 import { useLocation } from 'react-router-dom'
 import NotificationBell from './NotificationBell'
+import AdminProfileMenu from './AdminProfileMenu'
 
 export default function AdminTopbar({ onMenuClick }) {
   const location = useLocation()
@@ -27,8 +29,7 @@ export default function AdminTopbar({ onMenuClick }) {
 
   return (
     <header className="sticky top-0 z-20 flex min-h-[76px] items-center justify-between gap-4 border-b border-slate-200 bg-white px-5 md:px-7">
-
-      {/* LEFT SIDE: Menu, page title and search */}
+      {/* LEFT SIDE: Menu, breadcrumb, page title and search */}
       <div className="flex min-w-0 items-center gap-4">
         <button
           type="button"
@@ -49,6 +50,7 @@ export default function AdminTopbar({ onMenuClick }) {
           </h2>
         </div>
 
+        {/* Search */}
         <label className="hidden w-56 items-center gap-2 rounded-full border border-slate-200 bg-slate-50 px-4 py-2.5 md:flex lg:w-[300px]">
           <Search
             size={18}
@@ -65,45 +67,21 @@ export default function AdminTopbar({ onMenuClick }) {
         </label>
       </div>
 
-      {/* RIGHT SIDE: Date, notification bell and admin profile */}
+      {/* RIGHT SIDE: Date, notifications and ONE admin profile */}
       <div className="flex shrink-0 items-center gap-3 md:gap-5">
-
         {/* Current date */}
         <p className="hidden text-xs text-slate-500 xl:block">
           {today}
         </p>
 
-        {/* Notification bell — click to open the notification panel */}
+        {/* Notification bell */}
         <NotificationBell />
 
         {/* Divider */}
         <div className="hidden h-9 border-l border-slate-200 sm:block" />
 
-        {/* Admin profile */}
-        <button
-          type="button"
-          className="flex items-center gap-2 text-left"
-          aria-label="Admin user profile"
-        >
-          <span className="flex h-10 w-10 items-center justify-center rounded-full bg-[#006747] text-sm font-bold text-white">
-            AD
-          </span>
-
-          <span className="hidden sm:block">
-            <span className="block text-sm font-semibold text-slate-900">
-              Admin User
-            </span>
-
-            <span className="block text-xs text-slate-500">
-              Super Admin
-            </span>
-          </span>
-
-          <ChevronDown
-            size={16}
-            className="hidden text-slate-500 sm:block"
-          />
-        </button>
+        {/* Single admin profile with dropdown */}
+        <AdminProfileMenu />
       </div>
     </header>
   )

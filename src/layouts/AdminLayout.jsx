@@ -9,7 +9,7 @@ export default function AdminLayout() {
 
   return (
     <div className="flex h-screen w-full overflow-hidden bg-[#F0F7F4]">
-      {/* Desktop sidebar */}
+      {/* Desktop sidebar - keep existing green design */}
       <div className="hidden h-full shrink-0 lg:flex">
         <AdminSidebar />
       </div>
@@ -23,6 +23,7 @@ export default function AdminLayout() {
             onClick={() => setSidebarOpen(false)}
             className="absolute inset-0 bg-black/40"
           />
+
           <div className="relative z-10 h-full">
             <AdminSidebar />
           </div>
@@ -31,13 +32,18 @@ export default function AdminLayout() {
 
       {/* Main area */}
       <div className="flex min-w-0 flex-1 flex-col overflow-hidden">
-        <AdminTopbar onMenuClick={() => setSidebarOpen(true)} />
+        {/* Keep existing white topbar */}
+        <AdminTopbar
+          onMenuClick={() => setSidebarOpen(true)}
+        />
 
-        <main className="admin-main-scroll min-h-0 flex-1 overflow-y-auto">
-          <div className="min-h-full p-4 sm:p-5 lg:p-7">
-            <Outlet />
-          </div>
-        </main>
+        {/* Only this admin content area changes in dark mode */}
+      <main className="admin-content admin-main-scroll min-h-0 flex-1 overflow-y-auto bg-[#F0F7F4]">
+  <div className="min-h-full p-4 sm:p-5 lg:p-7">
+    <Outlet />
+  </div>
+</main>
+        
       </div>
     </div>
   )

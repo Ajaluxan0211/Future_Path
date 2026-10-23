@@ -451,3 +451,134 @@ input {
     display: none;
   }
 }
+
+
+
+/* =====================================================
+   FUTUREPATH — CONSISTENT ADMIN DARK MODE
+   Sidebar, topbar and profile dropdown stay light/green.
+   ===================================================== */
+
+body.admin-dark .admin-content {
+  background: #2b3642 !important;
+  color: #f1f5f9;
+  color-scheme: dark;
+  transition: background-color 0.25s ease, color 0.25s ease;
+}
+
+/* Main panels and cards */
+body.admin-dark .admin-content .bg-white,
+body.admin-dark .admin-content .bg-white\/80,
+body.admin-dark .admin-content .bg-\[\#F0F7F4\],
+body.admin-dark .admin-content .bg-\[\#F0F8F5\],
+body.admin-dark .admin-content .bg-\[\#F0F7F4\]\/80,
+body.admin-dark .admin-content .bg-slate-50 {
+  background-color: #374554 !important;
+}
+
+/* Page backgrounds and large pale panels */
+body.admin-dark .admin-content > div,
+body.admin-dark .admin-content > div > div {
+  background-color: transparent;
+}
+
+/* Filter and search toolbars */
+body.admin-dark .admin-content .bg-slate-100,
+body.admin-dark .admin-content .bg-blue-50,
+body.admin-dark .admin-content .bg-indigo-50,
+body.admin-dark .admin-content .bg-\[\#eef3ff\],
+body.admin-dark .admin-content .bg-\[\#eef2ff\] {
+  background-color: #3e4d5d !important;
+}
+
+/* Headings: fix white-on-light and dark-on-dark text */
+body.admin-dark .admin-content h1,
+body.admin-dark .admin-content h2,
+body.admin-dark .admin-content h3,
+body.admin-dark .admin-content h4 {
+  color: #f8fafc;
+}
+
+/* Standard text */
+body.admin-dark .admin-content .text-slate-950,
+body.admin-dark .admin-content .text-slate-900,
+body.admin-dark .admin-content .text-slate-800,
+body.admin-dark .admin-content .text-gray-900,
+body.admin-dark .admin-content .text-gray-800 {
+  color: #f1f5f9 !important;
+}
+
+body.admin-dark .admin-content .text-slate-700,
+body.admin-dark .admin-content .text-slate-600,
+body.admin-dark .admin-content .text-slate-500,
+body.admin-dark .admin-content .text-gray-700,
+body.admin-dark .admin-content .text-gray-600,
+body.admin-dark .admin-content .text-gray-500 {
+  color: #cbd5e1 !important;
+}
+
+/* Tables */
+body.admin-dark .admin-content table {
+  color: #f1f5f9;
+  border-color: #526273;
+}
+
+body.admin-dark .admin-content thead,
+body.admin-dark .admin-content thead tr,
+body.admin-dark .admin-content thead th {
+  background-color: #465769 !important;
+  color: #f8fafc !important;
+  border-color: #526273 !important;
+}
+
+body.admin-dark .admin-content tbody tr {
+  background-color: #374554 !important;
+}
+
+body.admin-dark .admin-content tbody tr:hover {
+  background-color: #465769 !important;
+}
+
+body.admin-dark .admin-content tbody td {
+  border-color: #526273 !important;
+}
+
+/* Inputs, selects and text areas */
+body.admin-dark .admin-content input,
+body.admin-dark .admin-content select,
+body.admin-dark .admin-content textarea {
+  background-color: #303e4c;
+  color: #f8fafc;
+  border-color: #526273;
+}
+
+body.admin-dark .admin-content input::placeholder,
+body.admin-dark .admin-content textarea::placeholder {
+  color: #b9c7d6;
+}
+
+body.admin-dark .admin-content select option {
+  background-color: #303e4c;
+  color: #f8fafc;
+}
+
+/* Borders */
+body.admin-dark .admin-content .border-slate-100,
+body.admin-dark .admin-content .border-slate-200,
+body.admin-dark .admin-content .border-gray-200 {
+  border-color: #526273 !important;
+}
+
+/* Hover states */
+body.admin-dark .admin-content .hover\:bg-slate-50:hover,
+body.admin-dark .admin-content .hover\:bg-slate-100:hover {
+  background-color: #465769 !important;
+}
+
+/* Preserve the existing green sidebar, white topbar,
+   and white profile dropdown */
+body.admin-dark header,
+body.admin-dark .admin-profile-menu {
+  color-scheme: light;
+}
+

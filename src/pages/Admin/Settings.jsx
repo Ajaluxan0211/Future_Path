@@ -166,7 +166,7 @@ export default function Settings() {
     ownerIdentity: true,
     apiKey: "fp_live_••••••••••••••••",
   });
-  const [saved, setSaved] = useState(false);
+  const [saved, setSaved] = useState(true);
   const [message, setMessage] = useState("");
   const [showApiKey, setShowApiKey] = useState(false);
 
@@ -224,7 +224,7 @@ export default function Settings() {
     setChannels(initialChannels);
     setSecurity(initialSecurity);
     setConnectors(initialConnectors);
-    setSaved(false);
+    setSaved(true);
     setMessage("Settings have been reset to their initial demo values.");
   };
 
@@ -787,16 +787,30 @@ export default function Settings() {
               </Card>
             </div>
 
-            {/* Bottom save controls */}
-            <div className="sticky bottom-3 z-10 flex flex-wrap items-center justify-between gap-3 rounded-xl border border-slate-200 bg-white/95 p-3 shadow-lg backdrop-blur">
-              <p className="text-xs text-slate-500">
-                {saved ? "Changes applied in this session." : "You may have unsaved changes."}
-              </p>
-              <div className="flex gap-2">
-                <button type="button" onClick={resetSettings} className="rounded-lg border border-slate-200 px-3 py-2 text-xs font-semibold text-slate-600 hover:bg-slate-50">Discard</button>
-                <button type="button" onClick={saveSettings} className="rounded-lg bg-[#075c3b] px-4 py-2 text-xs font-semibold text-white hover:bg-[#064b31]"><Save size={13} className="mr-1 inline" /> Save Changes</button>
+            {/* Bottom save controls: shown only after a setting changes. */}
+            {!saved && (
+              <div className="mt-5 flex flex-wrap items-center justify-between gap-3 rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
+                <p className="text-sm text-slate-600">
+                  You may have unsaved changes.
+                </p>
+                <div className="flex gap-2">
+                  <button
+                    type="button"
+                    onClick={resetSettings}
+                    className="rounded-lg border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-600 hover:bg-slate-50"
+                  >
+                    Discard
+                  </button>
+                  <button
+                    type="button"
+                    onClick={saveSettings}
+                    className="rounded-lg bg-[#075c3b] px-4 py-2 text-sm font-semibold text-white hover:bg-[#064b31]"
+                  >
+                    <Save size={15} className="mr-1 inline" /> Save Changes
+                  </button>
+                </div>
               </div>
-            </div>
+            )}
           </div>
         </div>
       </div>

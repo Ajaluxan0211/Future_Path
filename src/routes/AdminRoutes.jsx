@@ -16,6 +16,7 @@ import AnalyticsReports from '../pages/admin/AnalyticsReports'
 import Notifications from '../pages/admin/Notifications'
 import AdminUsersRoles from '../pages/admin/AdminUsersRoles'
 import AuditLogs from '../pages/admin/AuditLogs'
+import Settings from '../pages/admin/Settings'
 function ComingSoon({ title }) {
   return (
     <section className="rounded-2xl border border-slate-200 bg-white p-8">
@@ -57,25 +58,26 @@ export default function AdminRoutes() {
       <Route element={<AdminLayout />}>
         <Route index element={<Dashboard />} />
         <Route
-  path="agency-verification"
-  element={<AgencyVerification />}
-/>
-<Route path="agencies" element={<Agencies />} />
- <Route path="users" element={<Users />} />
- <Route path="scam-reports" element={<ScamReports />} />
- <Route path="countries" element={<Countries />} />
- <Route path="visas" element={<Visas/>} />
- <Route path="courses" element={<Courses />} />
- <Route path="universities" element={<Universities />} />
- <Route path="scholarships" element={<Scholarships />} />
- <Route path="stories" element={<SuccessStories />} />
+          path="agency-verification"
+          element={<AgencyVerification />}
+        />
+        <Route path="agencies" element={<Agencies />} />
+        <Route path="users" element={<Users />} />
+        <Route path="scam-reports" element={<ScamReports />} />
+        <Route path="countries" element={<Countries />} />
+        <Route path="visas" element={<Visas />} />
+        <Route path="courses" element={<Courses />} />
+        <Route path="universities" element={<Universities />} />
+        <Route path="scholarships" element={<Scholarships />} />
+        <Route path="stories" element={<SuccessStories />} />
         <Route path="analytics" element={<AnalyticsReports />} />
-         <Route path="notifications" element={<Notifications />} />
-         <Route
-  path="admin-users"
-  element={<AdminUsersRoles />}
-/>
-         <Route path="audit-logs" element={<AuditLogs />} />
+        <Route path="notifications" element={<Notifications />} />
+        <Route
+          path="admin-users"
+          element={<AdminUsersRoles />}
+        />
+        <Route path="audit-logs" element={<AuditLogs />} />
+        <Route path="settings" element={<Settings />} />
         {pages.map(([path, title]) => (
           <Route
             key={path}

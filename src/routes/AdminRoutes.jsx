@@ -17,6 +17,7 @@ import Notifications from '../pages/admin/Notifications'
 import AdminUsersRoles from '../pages/admin/AdminUsersRoles'
 import AuditLogs from '../pages/admin/AuditLogs'
 import Settings from '../pages/admin/Settings'
+
 function ComingSoon({ title }) {
   return (
     <section className="rounded-2xl border border-slate-200 bg-white p-8">

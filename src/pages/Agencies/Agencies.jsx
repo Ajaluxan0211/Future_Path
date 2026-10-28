@@ -1,361 +1,601 @@
-import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
-import { Search, MapPin, SlidersHorizontal, Shield, ArrowRight } from 'lucide-react'
 
-/* ══════════════════════════════════════
-   DATA
-══════════════════════════════════════ */
-const AGENCIES = [
+import { useEffect, useMemo, useState } from 'react'
+import { Link } from 'react-router-dom'
+import {
+  Building2,
+  MapPin,
+  Globe,
+  Phone,
+  Search,
+  SlidersHorizontal,
+  ShieldCheck,
+  CheckCircle2,
+  ArrowRight,
+  BriefcaseBusiness,
+  LoaderCircle,
+  RotateCcw,
+} from 'lucide-react'
+
+const API_URL = 'http://localhost:5000/api/agency/public'
+
+// Sample agencies are defined here; no separate data file is required.
+const SAMPLE_AGENCIES = [
   {
-    id: 1,
+    id: 'sample-1',
     name: 'Overseas Education Lanka',
-    location: 'Colombo, Sri Lanka',
-    trust: 92,
-    tags: ['Premium', 'Education Specialists'],
-    tagStyles: [
-      { bg: '#EBF7F1', color: '#0D5C3A', border: '#A8DFC4' },
-      { bg: '#F3F4F6', color: '#374151', border: '#E5E7EB' },
-    ],
-    scores: [
-      { label: 'Verification',  value: 98 },
-      { label: 'Success Rate',  value: 94 },
-      { label: 'Reviews',       value: 89 },
-      { label: 'Transparency',  value: 90 },
-    ],
-    desc: 'Specializing in Australian and UK Student Visa pathways since 2012.',
-    initials: 'OE',
-    avatarBg: '#EBF7F1',
-    avatarColor: '#0D5C3A',
-    featured: true,
+    address: 'Colombo',
+    country: 'Sri Lanka',
+    phone: '+94112345678',
+    email: 'info@overseaseducation.example',
+    website: 'https://example.com',
+    description:
+      'Specializing in overseas education and student visa guidance.',
+    services: ['Student Visa'],
+    operatingCountries: ['Australia', 'UK', 'Canada'],
+    verificationStatus: 'SAMPLE',
+    isSample: true,
   },
   {
-    id: 2,
+    id: 'sample-2',
     name: 'Visa Global Consultants',
-    location: 'Dubai, UAE',
-    trust: 87,
-    tags: ['Immigration', 'Business Visas'],
-    tagStyles: [
-      { bg: '#F3F4F6', color: '#374151', border: '#E5E7EB' },
-      { bg: '#F3F4F6', color: '#374151', border: '#E5E7EB' },
-    ],
-    scores: [
-      { label: 'Verification',  value: 92 },
-      { label: 'Success Rate',  value: 88 },
-      { label: 'Reviews',       value: 81 },
-      { label: 'Transparency',  value: 85 },
-    ],
-    desc: 'Global reach with offices in 5 countries. Experts in Skilled Migration.',
-    initials: 'VG',
-    avatarBg: '#EEF2FF',
-    avatarColor: '#3730A3',
-    featured: false,
-  },
-  {
-    id: 3,
-    name: 'PathWay Education Group',
-    location: 'Sydney, Australia',
-    trust: 85,
-    tags: ['Student Visas', 'PR Pathway'],
-    tagStyles: [
-      { bg: '#EEF2FF', color: '#3730A3', border: '#C7D2FE' },
-      { bg: '#FEF9EE', color: '#C2410C', border: '#FDE68A' },
-    ],
-    scores: [
-      { label: 'Verification',  value: 90 },
-      { label: 'Success Rate',  value: 85 },
-      { label: 'Reviews',       value: 88 },
-      { label: 'Transparency',  value: 82 },
-    ],
-    desc: 'Registered migration agents with MARA. Specialising in Australia PR pathways.',
-    initials: 'PW',
-    avatarBg: '#FFF7ED',
-    avatarColor: '#C2410C',
-    featured: false,
+    address: 'Colombo',
+    country: 'Sri Lanka',
+    phone: '+94112345679',
+    email: 'info@visaglobal.example',
+    website: 'https://example.org',
+    description:
+      'Providing guidance for overseas education and migration services.',
+    services: ['Work Visa', 'Visitor Visa'],
+    operatingCountries: ['Australia', 'Canada', 'United Kingdom'],
+    verificationStatus: 'SAMPLE',
+    isSample: true,
   },
 ]
 
-const TRUST_STEPS = [
-  { n: 1, title: 'Identity Verification',   desc: 'Legal entity registration, office address verification, and government licensing checks.' },
-  { n: 2, title: 'Authentic Reviews',        desc: 'Verified testimonials from users who have completed the full visa process through the agency.' },
-  { n: 3, title: 'Case Success Records',     desc: 'Historical success rates cross-referenced with local immigration authority statistics.' },
-  { n: 4, title: 'Fee Transparency',         desc: 'Clear breakdown of professional fees versus government costs without hidden charges.' },
-]
+function toArray(value) {
+  if (Array.isArray(value)) return value
 
-const REGIONS   = ['All Regions', 'Sri Lanka', 'Australia', 'UAE', 'UK', 'Canada', 'India']
-const VISA_TYPES = ['All Visa Types', 'Student Visas', 'Work Visas', 'Business Visas', 'PR Pathway', 'Visit Visas']
+  if (typeof value === 'string') {
+    try {
+      const parsed = JSON.parse(value)
+      return Array.isArray(parsed) ? parsed : []
+    } catch {
+      return value
+        .split(',')
+        .map(item => item.trim())
+        .filter(Boolean)
+    }
+  }
 
-/* ══════════════════════════════════════
-   SCORE BAR
-══════════════════════════════════════ */
-function ScoreBar({ label, value }) {
-  return (
-    <div>
-      <div className="flex items-center justify-between mb-1">
-        <span className="text-xs text-gray-500">{label}</span>
-        <span className="text-xs font-semibold text-gray-700">{value}%</span>
-      </div>
-      <div className="h-1.5 bg-gray-100 rounded-full overflow-hidden">
-        <div
-          className="h-full rounded-full transition-all duration-500"
-          style={{ width: `${value}%`, backgroundColor: '#0D5C3A' }}
-        />
-      </div>
-    </div>
-  )
+  return []
 }
 
-/* ══════════════════════════════════════
-   COMPONENT
-══════════════════════════════════════ */
-export default function Agencies() {
-  const navigate = useNavigate()
-  const [search,   setSearch]   = useState('')
-  const [region,   setRegion]   = useState('All Regions')
-  const [visaType, setVisaType] = useState('Student Visas')
+function normalizeAgency(agency) {
+  return {
+    ...agency,
+    name: agency.name || agency.companyName || 'Unnamed agency',
+    services: toArray(agency.services),
+    operatingCountries: toArray(agency.operatingCountries),
+    isSample: false,
+  }
+}
 
-  const filtered = AGENCIES.filter(a =>
-    search === '' || a.name.toLowerCase().includes(search.toLowerCase())
+export default function Agencies() {
+  const [databaseAgencies, setDatabaseAgencies] = useState([])
+  const [searchName, setSearchName] = useState('')
+  const [region, setRegion] = useState('All Regions')
+  const [visaType, setVisaType] = useState('All Visa Types')
+  const [appliedFilters, setAppliedFilters] = useState({
+    searchName: '',
+    region: 'All Regions',
+    visaType: 'All Visa Types',
+  })
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState('')
+
+  useEffect(() => {
+    const controller = new AbortController()
+
+    async function loadAgencies() {
+      setLoading(true)
+      setError('')
+
+      try {
+        const response = await fetch(API_URL, {
+          signal: controller.signal,
+        })
+
+        const result = await response.json()
+
+        if (!response.ok || result.success === false) {
+          throw new Error(
+            result.message || 'Unable to load approved agencies.'
+          )
+        }
+
+        const agencies = Array.isArray(result)
+          ? result
+          : result.agencies || result.data || []
+
+        // Only show approved database agencies.
+        const approved = agencies
+          .filter(
+            agency =>
+              String(agency.verificationStatus).toUpperCase() === 'APPROVED'
+          )
+          .map(normalizeAgency)
+
+        setDatabaseAgencies(approved)
+      } catch (err) {
+        if (err.name !== 'AbortError') {
+          console.error('Agency loading error:', err)
+          setError(
+            'We could not load approved agencies from the server. Sample agencies are still available.'
+          )
+        }
+      } finally {
+        if (!controller.signal.aborted) setLoading(false)
+      }
+    }
+
+    loadAgencies()
+
+    return () => controller.abort()
+  }, [])
+
+  // Use database IDs for real agencies and separate IDs for sample agencies.
+  const allAgencies = useMemo(
+    () => [...SAMPLE_AGENCIES, ...databaseAgencies],
+    [databaseAgencies]
   )
 
+  const regions = useMemo(() => {
+    const values = allAgencies
+      .map(agency => agency.country || 'Other')
+      .filter(Boolean)
+
+    return ['All Regions', ...new Set(values)]
+  }, [allAgencies])
+
+  const visaTypes = useMemo(() => {
+    const values = allAgencies.flatMap(agency => agency.services || [])
+    return ['All Visa Types', ...new Set(values)]
+  }, [allAgencies])
+
+  const filteredAgencies = useMemo(() => {
+    const search = appliedFilters.searchName.trim().toLowerCase()
+
+    return allAgencies.filter(agency => {
+      const nameMatches = (agency.name || '')
+        .toLowerCase()
+        .includes(search)
+
+      const regionMatches =
+        appliedFilters.region === 'All Regions' ||
+        (agency.country || '').toLowerCase() ===
+          appliedFilters.region.toLowerCase()
+
+      const visaMatches =
+        appliedFilters.visaType === 'All Visa Types' ||
+        (agency.services || []).some(
+          service =>
+            service.toLowerCase() ===
+            appliedFilters.visaType.toLowerCase()
+        )
+
+      return nameMatches && regionMatches && visaMatches
+    })
+  }, [allAgencies, appliedFilters])
+
+  function applyFilters(event) {
+    event.preventDefault()
+
+    setAppliedFilters({
+      searchName,
+      region,
+      visaType,
+    })
+  }
+
+  function resetFilters() {
+    setSearchName('')
+    setRegion('All Regions')
+    setVisaType('All Visa Types')
+
+    setAppliedFilters({
+      searchName: '',
+      region: 'All Regions',
+      visaType: 'All Visa Types',
+    })
+  }
+
   return (
-    <div style={{ backgroundColor: '#F0F7F4' }} className="min-h-screen pb-16">
-      <div className="max-w-5xl mx-auto px-6 py-8">
+    <main className="min-h-screen bg-[#f1f7f4] text-slate-900">
+      {/* Hero */}
+      <section className="relative isolate overflow-hidden bg-gradient-to-br from-emerald-950 via-emerald-900 to-emerald-700">
+        <div className="pointer-events-none absolute -right-20 -top-32 h-96 w-96 rounded-full border border-white/10" />
+        <div className="pointer-events-none absolute -bottom-40 left-1/3 h-96 w-96 rounded-full bg-emerald-400/10 blur-3xl" />
 
-        {/* ── Title ── */}
-        <h1 className="text-3xl font-bold text-gray-900 mb-6">
-          Find a verified agency
-        </h1>
+        <div className="relative mx-auto max-w-7xl px-5 py-12 sm:px-8 sm:py-16">
+          <div className="inline-flex items-center gap-2 rounded-full border border-emerald-300/25 bg-white/10 px-4 py-2 text-sm font-medium text-emerald-100">
+            <ShieldCheck size={17} />
+            FuturePath Verified Directory
+          </div>
 
-        {/* ── Filter card ── */}
-        <div className="bg-white rounded-2xl border border-gray-200 px-7 py-6 mb-8 shadow-sm">
-          <div className="flex items-end gap-5 flex-wrap">
+          <h1 className="mt-6 max-w-3xl text-4xl font-bold tracking-tight text-white sm:text-5xl lg:text-6xl">
+            Find the right agency for your future.
+          </h1>
 
-            {/* Search */}
-            <div className="flex-1 min-w-[180px]">
-              <div className="text-xs font-bold uppercase tracking-widest text-gray-400 mb-2">
-                Search by Name
-              </div>
-              <div className="relative">
-                <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
-                <input
-                  value={search}
-                  onChange={e => setSearch(e.target.value)}
-                  placeholder="Agency name..."
-                  className="w-full pl-9 pr-3 py-2.5 text-sm border border-gray-200 rounded-lg bg-white outline-none focus:border-green-700 transition-colors"
-                />
-              </div>
-            </div>
+          <p className="mt-5 max-w-2xl text-base leading-7 text-emerald-100 sm:text-lg">
+            Explore agency services, compare operating countries, and find
+            contact details before starting your overseas journey.
+          </p>
 
-            {/* Region */}
-            <div className="flex-1 min-w-[160px]">
-              <div className="text-xs font-bold uppercase tracking-widest text-gray-400 mb-2">
-                Service Region
-              </div>
-              <div className="relative">
-                <select
-                  value={region}
-                  onChange={e => setRegion(e.target.value)}
-                  className="w-full appearance-none text-sm border border-gray-200 rounded-lg bg-white pl-3 pr-8 py-2.5 outline-none cursor-pointer"
-                >
-                  {REGIONS.map(r => <option key={r}>{r}</option>)}
-                </select>
-                <span className="absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none text-gray-400 text-xs">▾</span>
-              </div>
-            </div>
-
-            {/* Visa type */}
-            <div className="flex-1 min-w-[160px]">
-              <div className="text-xs font-bold uppercase tracking-widest text-gray-400 mb-2">
-                Visa Type
-              </div>
-              <div className="relative">
-                <select
-                  value={visaType}
-                  onChange={e => setVisaType(e.target.value)}
-                  className="w-full appearance-none text-sm border border-gray-200 rounded-lg bg-white pl-3 pr-8 py-2.5 outline-none cursor-pointer"
-                >
-                  {VISA_TYPES.map(v => <option key={v}>{v}</option>)}
-                </select>
-                <span className="absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none text-gray-400 text-xs">▾</span>
-              </div>
-            </div>
-
-            {/* Apply filters btn */}
-            <button
-              className="flex items-center gap-2 text-white font-bold text-sm px-7 py-2.5 rounded-lg hover:opacity-90 transition-opacity flex-shrink-0"
-              style={{ backgroundColor: '#0D5C3A' }}
-            >
-              <SlidersHorizontal size={15} /> Apply Filters
-            </button>
+          <div className="mt-7 flex flex-wrap gap-3 text-sm text-white">
+            <span className="flex items-center gap-2 rounded-full bg-white/10 px-4 py-2">
+              <CheckCircle2 size={16} />
+              Admin-approved listings
+            </span>
+            <span className="flex items-center gap-2 rounded-full bg-white/10 px-4 py-2">
+              <BriefcaseBusiness size={16} />
+              Compare visa services
+            </span>
           </div>
         </div>
+      </section>
 
-        {/* ── Two column layout ── */}
-        <div className="flex gap-6 items-start">
+      <div className="mx-auto max-w-7xl px-5 py-8 sm:px-8 sm:py-10">
+        {/* Filters */}
+        <form
+          onSubmit={applyFilters}
+          className="grid gap-5 rounded-3xl border border-slate-200 bg-white p-5 shadow-sm sm:p-7 lg:grid-cols-[1.2fr_1fr_1fr_auto] lg:items-end"
+        >
+          <div>
+            <label
+              htmlFor="agency-search"
+              className="mb-2 block text-xs font-bold uppercase tracking-widest text-slate-500"
+            >
+              Search by name
+            </label>
 
-          {/* LEFT: agency cards */}
-          <div className="flex-1 flex flex-col gap-5">
-            {filtered.map(a => (
-              <div
-                key={a.id}
-                className="bg-white rounded-2xl overflow-hidden transition-shadow duration-200 hover:shadow-md"
-                style={{ border: a.featured ? '2px solid #0D5C3A' : '1px solid #E5E7EB' }}
-              >
-                <div className="p-6">
-                  <div className="flex gap-5">
-
-                    {/* Left: avatar + trust score */}
-                    <div className="flex flex-col items-center gap-2 flex-shrink-0 w-20">
-                      <div
-                        className="w-16 h-16 rounded-2xl flex items-center justify-center text-xl font-bold border border-gray-100"
-                        style={{ backgroundColor: a.avatarBg, color: a.avatarColor }}
-                      >
-                        {a.initials}
-                      </div>
-                      <div className="text-center">
-                        <div className="text-2xl font-bold leading-none" style={{ color: '#0D5C3A' }}>
-                          {a.trust}
-                        </div>
-                        <div className="text-xs text-gray-400 font-semibold uppercase tracking-wide mt-0.5">
-                          Trust Score
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Right: content */}
-                    <div className="flex-1 min-w-0">
-
-                      {/* Header row */}
-                      <div className="flex items-start justify-between gap-3 mb-1">
-                        <div>
-                          <h3 className="text-lg font-bold text-gray-900 leading-tight">{a.name}</h3>
-                          <div className="flex items-center gap-1 mt-0.5">
-                            <MapPin size={12} className="text-gray-400" />
-                            <span className="text-xs text-gray-400">{a.location}</span>
-                          </div>
-                        </div>
-                        <div className="flex items-center gap-2 flex-shrink-0">
-                          {a.tags.map((tag, i) => (
-                            <span key={tag}
-                              className="text-xs font-semibold px-2.5 py-1 rounded-full border"
-                              style={{
-                                backgroundColor: a.tagStyles[i].bg,
-                                color:           a.tagStyles[i].color,
-                                borderColor:     a.tagStyles[i].border,
-                              }}
-                            >
-                              {tag}
-                            </span>
-                          ))}
-                        </div>
-                      </div>
-
-                      {/* Score bars 2x2 */}
-                      <div className="grid grid-cols-2 gap-x-8 gap-y-2.5 mt-4 mb-4">
-                        {a.scores.map(s => (
-                          <ScoreBar key={s.label} label={s.label} value={s.value} />
-                        ))}
-                      </div>
-
-                      {/* Description + buttons */}
-                      <div className="flex items-end justify-between gap-4 mt-3">
-                        <p className="text-xs text-gray-400 leading-relaxed flex-1">{a.desc}</p>
-                        <div className="flex gap-2 flex-shrink-0">
-                          <button
-                            onClick={() => navigate(`/agencies/${a.id}`)}
-                            className="text-sm font-bold px-5 py-2.5 rounded-xl border-2 border-gray-200 text-gray-700 hover:bg-gray-50 transition-colors"
-                          >
-                            View Profile
-                          </button>
-                          <button
-                            onClick={() => navigate(`/agencies/${a.id}/contact`)}
-                            className="text-sm font-bold px-5 py-2.5 rounded-xl text-white hover:opacity-90 transition-opacity"
-                            style={{ backgroundColor: '#0D5C3A' }}
-                          >
-                            Contact Now
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            ))}
-
-            {filtered.length === 0 && (
-              <div className="bg-white rounded-2xl border border-gray-200 p-16 text-center">
-                <div className="text-4xl mb-3">🔍</div>
-                <div className="text-gray-900 font-semibold mb-1">No agencies found</div>
-                <div className="text-sm text-gray-400">Try adjusting your search</div>
-              </div>
-            )}
+            <div className="flex items-center gap-3 rounded-xl border border-slate-200 px-3 focus-within:border-emerald-600 focus-within:ring-4 focus-within:ring-emerald-50">
+              <Search size={18} className="shrink-0 text-slate-400" />
+              <input
+                id="agency-search"
+                value={searchName}
+                onChange={event => setSearchName(event.target.value)}
+                placeholder="Agency name..."
+                className="min-w-0 w-full py-3 outline-none"
+              />
+            </div>
           </div>
 
-          {/* RIGHT sidebar */}
-          <div className="w-72 flex-shrink-0 flex flex-col gap-4">
+          <div>
+            <label
+              htmlFor="agency-region"
+              className="mb-2 block text-xs font-bold uppercase tracking-widest text-slate-500"
+            >
+              Service region
+            </label>
 
-            {/* How trust scores work */}
-            <div className="rounded-2xl p-6" style={{ backgroundColor: '#0D5C3A' }}>
-              <div className="flex items-center gap-3 mb-3">
-                <Shield size={20} color="#fff" />
-                <span className="text-white font-bold text-base leading-snug">
-                  How trust scores are calculated
-                </span>
+            <select
+              id="agency-region"
+              value={region}
+              onChange={event => setRegion(event.target.value)}
+              className="w-full rounded-xl border border-slate-200 bg-white px-3 py-3 outline-none focus:border-emerald-600"
+            >
+              {regions.map(item => (
+                <option key={item} value={item}>
+                  {item}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div>
+            <label
+              htmlFor="agency-visa"
+              className="mb-2 block text-xs font-bold uppercase tracking-widest text-slate-500"
+            >
+              Visa type
+            </label>
+
+            <select
+              id="agency-visa"
+              value={visaType}
+              onChange={event => setVisaType(event.target.value)}
+              className="w-full rounded-xl border border-slate-200 bg-white px-3 py-3 outline-none focus:border-emerald-600"
+            >
+              {visaTypes.map(item => (
+                <option key={item} value={item}>
+                  {item}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div className="flex gap-2">
+            <button
+              type="submit"
+              className="inline-flex flex-1 items-center justify-center gap-2 rounded-xl bg-emerald-800 px-5 py-3 font-semibold text-white transition hover:bg-emerald-900"
+            >
+              <SlidersHorizontal size={17} />
+              Apply Filters
+            </button>
+
+            <button
+              type="button"
+              onClick={resetFilters}
+              title="Reset filters"
+              className="inline-flex items-center justify-center rounded-xl border border-slate-200 px-3 py-3 text-slate-600 transition hover:bg-slate-50"
+            >
+              <RotateCcw size={17} />
+            </button>
+          </div>
+        </form>
+
+        {/* Directory and information panel */}
+        <div className="mt-8 grid grid-cols-1 items-start gap-6 lg:grid-cols-[minmax(0,1fr)_320px]">
+          <section>
+            <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
+              <div>
+                <h2 className="text-2xl font-bold">Agencies</h2>
+                <p className="mt-1 text-sm text-slate-500">
+                  Browse listings and open each agency's individual profile.
+                </p>
               </div>
-              <p className="text-xs leading-relaxed mb-5" style={{ color: '#A8DFC4' }}>
-                Our proprietary algorithm analyzes hundreds of data points to ensure you work with only the most reliable partners.
+
+              <span className="rounded-full bg-white px-4 py-2 text-sm font-medium text-slate-600 shadow-sm">
+                {filteredAgencies.length}{' '}
+                {filteredAgencies.length === 1 ? 'agency' : 'agencies'} found
+              </span>
+            </div>
+
+            {loading && (
+              <div className="mb-4 flex items-center gap-2 rounded-xl bg-white p-4 text-sm text-slate-600">
+                <LoaderCircle size={18} className="animate-spin" />
+                Loading approved agencies...
+              </div>
+            )}
+
+            {error && (
+              <div className="mb-4 rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm leading-6 text-amber-900">
+                {error}
+              </div>
+            )}
+
+            <div className="space-y-5">
+              {filteredAgencies.map(agency => {
+                const address = [
+                  agency.address,
+                  agency.city,
+                  agency.country,
+                ]
+                  .filter(Boolean)
+                  .filter(
+                    (value, index, array) => array.indexOf(value) === index
+                  )
+                  .join(', ')
+
+                const services = agency.services || []
+                const countries = agency.operatingCountries || []
+
+                return (
+                  <article
+                    key={String(agency.id)}
+                    className="group overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm transition duration-200 hover:-translate-y-0.5 hover:border-emerald-300 hover:shadow-lg"
+                  >
+                    <div className="p-5 sm:p-7">
+                      <div className="flex items-start gap-4">
+                        <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl border border-emerald-100 bg-emerald-50 text-emerald-800">
+                          <Building2 size={30} />
+                        </div>
+
+                        <div className="min-w-0 flex-1">
+                          <div className="flex flex-wrap items-start justify-between gap-3">
+                            <h3 className="break-words text-xl font-bold sm:text-2xl">
+                              {agency.name}
+                            </h3>
+
+                            <span
+                              className={`inline-flex shrink-0 items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-semibold ${
+                                agency.isSample
+                                  ? 'border-emerald-200 bg-emerald-50 text-emerald-800'
+                                  : 'border-green-200 bg-green-50 text-green-800'
+                              }`}
+                            >
+                              <ShieldCheck size={14} />
+                              {agency.isSample ? 'Sample' : 'Verified'}
+                            </span>
+                          </div>
+
+                          <p className="mt-2 flex items-start gap-2 text-sm text-slate-500">
+                            <MapPin size={17} className="mt-0.5 shrink-0" />
+                            {address || 'Location not provided'}
+                          </p>
+
+                          {services.length > 0 && (
+                            <div className="mt-4 flex flex-wrap gap-2">
+                              {services.map(service => (
+                                <span
+                                  key={service}
+                                  className="rounded-full border border-emerald-100 bg-emerald-50 px-3 py-1.5 text-xs font-semibold text-emerald-800"
+                                >
+                                  {service}
+                                </span>
+                              ))}
+                            </div>
+                          )}
+
+                          {agency.description && (
+                            <p className="mt-4 text-sm leading-7 text-slate-600">
+                              {agency.description}
+                            </p>
+                          )}
+
+                          {countries.length > 0 && (
+                            <div className="mt-5">
+                              <p className="mb-2 flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-slate-500">
+                                <Globe size={15} />
+                                Operating countries
+                              </p>
+
+                              <div className="flex flex-wrap gap-2">
+                                {countries.map(country => (
+                                  <span
+                                    key={country}
+                                    className="rounded-lg bg-slate-100 px-3 py-1.5 text-xs font-medium text-slate-700"
+                                  >
+                                    {country}
+                                  </span>
+                                ))}
+                              </div>
+                            </div>
+                          )}
+
+                          {(agency.phone || agency.website) && (
+                            <div className="mt-5 flex flex-wrap gap-x-5 gap-y-2 text-sm text-slate-600">
+                              {agency.phone && (
+                                <a
+                                  href={`tel:${agency.phone}`}
+                                  className="inline-flex items-center gap-2 hover:text-emerald-800"
+                                >
+                                  <Phone size={15} />
+                                  {agency.phone}
+                                </a>
+                              )}
+
+                              {agency.website && (
+                                <a
+                                  href={
+                                    /^https?:\/\//i.test(agency.website)
+                                      ? agency.website
+                                      : `https://${agency.website}`
+                                  }
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="inline-flex items-center gap-2 break-all text-emerald-800 hover:underline"
+                                >
+                                  <Globe size={15} />
+                                  Website
+                                </a>
+                              )}
+                            </div>
+                          )}
+
+                          <div className="mt-6 flex flex-wrap gap-3 border-t border-slate-100 pt-5">
+                            <Link
+                              to={`/agencies/${encodeURIComponent(String(agency.id))}`}
+                              className="inline-flex items-center justify-center gap-2 rounded-xl border border-slate-200 px-5 py-3 font-medium text-slate-700 transition hover:border-emerald-300 hover:bg-emerald-50"
+                            >
+                              View Profile
+                              <ArrowRight size={16} />
+                            </Link>
+
+                            <Link
+                              to={`/agencies/${encodeURIComponent(String(agency.id))}/contact`}
+                              className="inline-flex items-center justify-center gap-2 rounded-xl bg-emerald-800 px-5 py-3 font-semibold text-white transition hover:bg-emerald-900"
+                            >
+                              Contact Now
+                              <ArrowRight size={16} />
+                            </Link>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </article>
+                )
+              })}
+            </div>
+
+            {!loading && filteredAgencies.length === 0 && (
+              <div className="rounded-3xl border border-slate-200 bg-white px-6 py-16 text-center shadow-sm">
+                <Search size={38} className="mx-auto text-slate-300" />
+                <h3 className="mt-4 text-xl font-bold">No agencies found</h3>
+                <p className="mt-2 text-sm text-slate-500">
+                  Try a different name, region, or visa type.
+                </p>
+                <button
+                  onClick={resetFilters}
+                  className="mt-5 rounded-xl bg-emerald-800 px-5 py-3 font-semibold text-white hover:bg-emerald-900"
+                >
+                  Reset filters
+                </button>
+              </div>
+            )}
+          </section>
+
+          {/* Verification information */}
+          <aside className="space-y-5 lg:sticky lg:top-24">
+            <section className="rounded-3xl bg-gradient-to-br from-emerald-950 to-emerald-800 p-6 text-white shadow-lg">
+              <ShieldCheck size={27} />
+              <h2 className="mt-4 text-xl font-bold">
+                How verification works
+              </h2>
+
+              <p className="mt-3 text-sm leading-6 text-emerald-100">
+                Database agencies appear after an administrator approves their
+                application. Sample entries are provided for demonstration.
               </p>
 
-              <div className="flex flex-col gap-4">
-                {TRUST_STEPS.map(s => (
-                  <div key={s.n} className="flex gap-3">
-                    <div
-                      className="w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0 mt-0.5"
-                      style={{ backgroundColor: 'rgba(255,255,255,0.2)', color: '#fff' }}
-                    >
-                      {s.n}
+              <div className="mt-6 space-y-5">
+                {[
+                  {
+                    title: 'Identity verification',
+                    text: 'Submitted registration documents are reviewed.',
+                  },
+                  {
+                    title: 'Approval status',
+                    text: 'Real agencies appear after administrator approval.',
+                  },
+                  {
+                    title: 'Compare services',
+                    text: 'Review available services and operating countries.',
+                  },
+                  {
+                    title: 'Fee transparency',
+                    text: 'Ask agencies for clear details about service fees.',
+                  },
+                ].map((item, index) => (
+                  <div key={item.title} className="flex gap-3">
+                    <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-white/15 text-sm font-bold">
+                      {index + 1}
                     </div>
                     <div>
-                      <div className="text-white font-bold text-sm mb-0.5">{s.title}</div>
-                      <div className="text-xs leading-relaxed" style={{ color: '#A8DFC4' }}>
-                        {s.desc}
-                      </div>
+                      <h3 className="font-semibold">{item.title}</h3>
+                      <p className="mt-1 text-sm leading-6 text-emerald-100">
+                        {item.text}
+                      </p>
                     </div>
                   </div>
                 ))}
               </div>
+            </section>
 
-              <button
-                className="w-full mt-6 py-3 rounded-xl font-bold text-sm transition-colors hover:bg-green-100"
-                style={{ backgroundColor: '#A8DFC4', color: '#0D5C3A' }}
-              >
-                Learn more about Integrity
-              </button>
-            </div>
-
-            {/* Need help choosing */}
-            <div className="bg-white rounded-2xl border border-gray-200 p-5">
-              <div className="flex items-center gap-2.5 mb-2">
-                <div className="w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0"
-                  style={{ backgroundColor: '#EBF7F1' }}>
-                  <Shield size={14} style={{ color: '#0D5C3A' }} />
+            <section className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+              <div className="flex items-center gap-3">
+                <div className="rounded-xl bg-emerald-50 p-3 text-emerald-800">
+                  <BriefcaseBusiness size={22} />
                 </div>
-                <span className="text-sm font-bold text-gray-900">Need help choosing?</span>
+                <h3 className="font-bold">Find your service</h3>
               </div>
-              <p className="text-sm text-gray-500 leading-relaxed mb-3">
-                Our expert advisors can match you with the right agency based on your specific profile and destination.
-              </p>
-              <button
-                className="flex items-center gap-1 text-sm font-bold hover:opacity-80 transition-opacity"
-                style={{ color: '#0D5C3A' }}
-              >
-                Speak with a consultant <ArrowRight size={13} />
-              </button>
-            </div>
 
-          </div>
+              <p className="mt-3 text-sm leading-6 text-slate-500">
+                Filter agencies by visa type and country to find services that
+                match your plans.
+              </p>
+
+              <button
+                onClick={resetFilters}
+                className="mt-4 inline-flex items-center gap-2 font-semibold text-emerald-800 hover:text-emerald-950"
+              >
+                Clear all filters
+                <ArrowRight size={16} />
+              </button>
+            </section>
+          </aside>
         </div>
       </div>
-    </div>
+    </main>
   )
 }

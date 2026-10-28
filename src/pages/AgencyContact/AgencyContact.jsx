@@ -1,348 +1,453 @@
-import { useState } from 'react'
-import { useNavigate, useParams, Link } from 'react-router-dom'
-import { Phone, Mail, MapPin, Globe, Clock, CheckCircle, ArrowRight } from 'lucide-react'
 
-/* ══ Same agency data ══ */
-const AGENCIES = {
-  1: {
-    initials: 'VG', name: 'Visa Global Consultants',
-    avatarBg: '#EEF2FF', avatarColor: '#3730A3',
-    location: 'Colombo, Sri Lanka', trust: 87,
-    license: 'VG-20140892',
-    scores: [
-      { label: 'Gov registration',  value: 95 },
-      { label: 'User reviews',      value: 86 },
-      { label: 'Successful cases',  value: 82 },
-      { label: 'Years in operation',value: 80 },
-    ],
-    responseTime: 'Within 24 hours',
-    regarding: 'Master of Cyber Security — UNSW Sydney',
-    deadline: 'Feb / Jul Intakes',
-  },
-  2: {
-    initials: 'OE', name: 'Overseas Education Lanka',
-    avatarBg: '#EBF7F1', avatarColor: '#0D5C3A',
-    location: 'Kandy, Sri Lanka', trust: 92,
-    license: 'OE-20110456',
-    scores: [
-      { label: 'Gov registration',  value: 98 },
-      { label: 'User reviews',      value: 91 },
-      { label: 'Successful cases',  value: 89 },
-      { label: 'Years in operation',value: 90 },
-    ],
-    responseTime: 'Within 12 hours',
-    regarding: 'Master of IT (Cyber Security) — Deakin University',
-    deadline: 'Mar / Jul Intakes',
-  },
-  3: {
-    initials: 'GE', name: 'Global Education Services',
-    avatarBg: '#F5F3FF', avatarColor: '#7C3AED',
-    location: 'Colombo, Sri Lanka', trust: 78,
-    license: 'GE-20160789',
-    scores: [
-      { label: 'Gov registration',  value: 88 },
-      { label: 'User reviews',      value: 79 },
-      { label: 'Successful cases',  value: 76 },
-      { label: 'Years in operation',value: 70 },
-    ],
-    responseTime: 'Within 24 hours',
-    regarding: 'MSc in Applied Computing — University of Toronto',
-    deadline: 'Sep / Jan Intakes',
-  },
-}
+import { useEffect, useState } from 'react'
+import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom'
+import {
+  ArrowLeft,
+  ArrowRight,
+  Building2,
+  CheckCircle2,
+  Globe,
+  MapPin,
+  Phone,
+  Mail,
+  Send,
+  LoaderCircle,
+} from 'lucide-react'
 
-const SUBJECTS = [
-  'Master of Cyber Security at UNSW',
-  'Student visa Australia',
-  'Work visa Australia',
-  'General enquiry',
+const API_URL = 'http://localhost:5000/api/agency/public'
+
+const SAMPLE_AGENCIES = [
+  {
+    id: 'sample-1',
+    name: 'Overseas Education Lanka',
+    address: 'Colombo',
+    country: 'Sri Lanka',
+    phone: '+94112345678',
+    email: 'info@overseaseducation.example',
+    website: 'https://example.com',
+    description: 'Overseas education and student visa guidance.',
+    services: ['Student Visa', 'University Applications'],
+    operatingCountries: ['Australia', 'United Kingdom', 'Canada'],
+    verificationStatus: 'SAMPLE',
+    isSample: true,
+  },
+  {
+    id: 'sample-2',
+    name: 'Global Migration Consultants',
+    address: 'Kandy',
+    country: 'Sri Lanka',
+    phone: '+94812234567',
+    email: 'info@globalmigration.example',
+    website: 'https://example.org',
+    description: 'Sample migration and visa guidance services.',
+    services: ['Work Visa', 'Visitor Visa', 'Migration Guidance'],
+    operatingCountries: ['Australia', 'Canada', 'New Zealand'],
+    verificationStatus: 'SAMPLE',
+    isSample: true,
+  },
 ]
 
-function ScoreBar({ label, value }) {
-  return (
-    <div className="flex items-center justify-between gap-3">
-      <span className="text-xs text-gray-500 w-28 flex-shrink-0">{label}</span>
-      <div className="flex-1 h-1 bg-gray-100 rounded-full overflow-hidden">
-        <div className="h-full rounded-full" style={{ width: `${value}%`, backgroundColor: '#0D5C3A' }} />
-      </div>
-      <span className="text-xs font-bold text-gray-600 w-8 text-right">{value}%</span>
-    </div>
-  )
-}
-
 export default function AgencyContact() {
-  const navigate  = useNavigate()
-  const { id }    = useParams()
-  const agency    = AGENCIES[id] || AGENCIES[Number(id)] || AGENCIES[1]
+  const { id } = useParams()
+  const navigate = useNavigate()
+  const [searchParams] = useSearchParams()
+
+  const [agency, setAgency] = useState(null)
+  const [loading, setLoading] = useState(Boolean(id))
+  const [error, setError] = useState('')
+  const [notice, setNotice] = useState('')
 
   const [form, setForm] = useState({
-    firstName: '', lastName: '', email: '',
-    phone: '', subject: '', ielts: '', message: '', agree: false,
+    name: '',
+    email: '',
+    phone: '',
+    subject: searchParams.get('service')
+      ? `Enquiry about ${searchParams.get('service')}`
+      : '',
+    message: '',
   })
-  const [submitted, setSubmitted] = useState(false)
-  const [error,     setError]     = useState('')
 
-  function handleSubmit(e) {
-    e.preventDefault()
-    if (!form.firstName || !form.lastName || !form.email || !form.message) {
-      setError('Please fill in all required fields.')
-      return
+  useEffect(() => {
+    const controller = new AbortController()
+
+    async function loadAgency() {
+      setError('')
+      setAgency(null)
+
+      if (!id) {
+        setAgency(SAMPLE_AGENCIES[0])
+        setLoading(false)
+        return
+      }
+
+      const sample = SAMPLE_AGENCIES.find(
+        item => String(item.id) === String(id)
+      )
+
+      if (sample) {
+        setAgency(sample)
+        setLoading(false)
+        return
+      }
+
+      setLoading(true)
+
+      try {
+        const response = await fetch(API_URL, {
+          signal: controller.signal,
+        })
+        const result = await response.json()
+
+        if (!response.ok || result.success === false) {
+          throw new Error(result.message || 'Unable to load agencies.')
+        }
+
+        const agencies = Array.isArray(result)
+          ? result
+          : result.agencies || result.data || []
+
+        const found = agencies.find(
+          item =>
+            String(item.id) === String(id) &&
+            item.verificationStatus === 'APPROVED'
+        )
+
+        if (!found) {
+          setError('This agency could not be found or is not approved.')
+          return
+        }
+
+        setAgency(found)
+      } catch (err) {
+        if (err.name !== 'AbortError') {
+          console.error(err)
+          setError('Unable to load agency details. Please try again.')
+        }
+      } finally {
+        if (!controller.signal.aborted) setLoading(false)
+      }
     }
-    if (!form.agree) {
-      setError('Please agree to be contacted by this agency.')
-      return
-    }
-    setError('')
-    setSubmitted(true)
+
+    loadAgency()
+    return () => controller.abort()
+  }, [id])
+
+  function handleChange(event) {
+    setForm(previous => ({
+      ...previous,
+      [event.target.name]: event.target.value,
+    }))
   }
 
-  /* ── Success screen ── */
-  if (submitted) {
+  function handleSubmit(event) {
+    event.preventDefault()
+    setError('')
+    setNotice('')
+
+    if (!agency) return
+
+    if (agency.isSample) {
+      setNotice(
+        'This is a sample agency. Your test enquiry has not been sent or saved.'
+      )
+      return
+    }
+
+    if (!agency.email) {
+      setError(
+        'This agency has not provided an email address. Please contact it by phone if available.'
+      )
+      return
+    }
+
+    const subject = encodeURIComponent(
+      form.subject || `Enquiry for ${agency.name}`
+    )
+    const body = encodeURIComponent(
+      `Agency: ${agency.name}\n` +
+      `Name: ${form.name}\n` +
+      `Email: ${form.email}\n` +
+      `Phone: ${form.phone || 'Not provided'}\n\n` +
+      `Message:\n${form.message}`
+    )
+
+    window.location.href =
+      `mailto:${agency.email}?subject=${subject}&body=${body}`
+  }
+
+  if (loading) {
     return (
-      <div style={{ backgroundColor: '#F0F7F4' }} className="min-h-screen flex items-center justify-center px-6">
-        <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-10 max-w-md w-full text-center">
-          <div className="w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-5"
-            style={{ backgroundColor: '#EBF7F1' }}>
-            <CheckCircle size={40} style={{ color: '#0D5C3A' }} />
-          </div>
-          <h1 className="text-2xl font-bold text-gray-900 mb-2">Message sent!</h1>
-          <p className="text-sm text-gray-400 leading-relaxed mb-6">
-            <strong>{agency.name}</strong> will respond within 24 hours to <strong>{form.email || 'your email'}</strong>.
-          </p>
-          <div className="rounded-xl p-4 mb-6 text-left" style={{ backgroundColor: '#F0F7F4' }}>
-            {[
-              { label: 'Agency',         value: agency.name              },
-              { label: 'Response time',  value: agency.responseTime, green: true },
-            ].map(row => (
-              <div key={row.label} className="flex items-center justify-between py-2 border-b border-gray-100 last:border-0">
-                <span className="text-xs text-gray-500">{row.label}</span>
-                <span className={`text-xs font-bold ${row.green ? '' : 'text-gray-900'}`}
-                  style={{ color: row.green ? '#0D5C3A' : undefined }}>
-                  {row.value}
-                </span>
-              </div>
-            ))}
-          </div>
-          <div className="flex flex-col gap-3">
-            <button onClick={() => navigate('/')}
-              className="w-full py-3.5 rounded-xl text-white font-bold text-sm hover:opacity-90 transition-opacity"
-              style={{ backgroundColor: '#0D5C3A' }}>
-              Go to homepage
-            </button>
-            <button onClick={() => navigate('/courses')}
-              className="w-full py-3 rounded-xl font-bold text-sm border border-gray-200 text-gray-600 hover:bg-gray-50 transition-colors">
-              Browse more courses
-            </button>
-            <button onClick={() => navigate('/')}
-              className="text-xs text-gray-400 hover:text-gray-600 transition-colors">
-              Back to home
-            </button>
-          </div>
-        </div>
+      <div className="flex min-h-[60vh] items-center justify-center bg-[#f3f8f5]">
+        <LoaderCircle size={30} className="animate-spin text-emerald-800" />
+        <span className="ml-3 text-gray-600">Loading contact details...</span>
       </div>
     )
   }
 
+  if (!agency) {
+    return (
+      <div className="flex min-h-[60vh] flex-col items-center justify-center bg-[#f3f8f5] px-5 text-center">
+        <Building2 size={42} className="text-gray-400" />
+        <h1 className="mt-4 text-2xl font-bold">Agency not found</h1>
+        <p className="mt-2 text-gray-500">
+          {error || 'This agency is unavailable.'}
+        </p>
+        <Link
+          to="/agencies"
+          className="mt-5 rounded-xl bg-emerald-800 px-5 py-3 font-semibold text-white"
+        >
+          Back to agencies
+        </Link>
+      </div>
+    )
+  }
+
+  const location = [agency.address, agency.city, agency.country]
+    .filter(Boolean)
+    .filter((value, index, array) => array.indexOf(value) === index)
+    .join(', ')
+
+  const website = agency.website
+    ? /^https?:\/\//i.test(agency.website)
+      ? agency.website
+      : `https://${agency.website}`
+    : ''
+
   return (
-    <div style={{ backgroundColor: '#F0F7F4' }} className="min-h-screen pb-16">
-
-      {/* Breadcrumb */}
-      <div className="bg-white border-b border-gray-100">
-        <div className="max-w-5xl mx-auto px-8 py-3 flex items-center gap-2 text-sm text-gray-400">
-          <Link to="/courses" className="hover:text-gray-600">Courses</Link>
-          <span className="text-gray-300">›</span>
-          <Link to={`/agencies/${id}`} className="hover:text-gray-600">{agency.name}</Link>
-          <span className="text-gray-300">›</span>
-          <span className="font-semibold text-gray-900">Contact</span>
+    <div className="min-h-screen bg-[#f3f8f5] text-gray-900">
+      <div className="border-b border-gray-200 bg-white">
+        <div className="mx-auto max-w-6xl px-5 py-4">
+          <Link
+            to={id ? `/agencies/${agency.id}` : '/agencies'}
+            className="inline-flex items-center gap-2 text-sm text-gray-500 hover:text-emerald-800"
+          >
+            <ArrowLeft size={16} />
+            {id ? `Back to ${agency.name}` : 'All agencies'}
+          </Link>
         </div>
       </div>
 
-      {/* Page header */}
-      <div className="bg-white border-b border-gray-200 px-8 py-6">
-        <div className="max-w-5xl mx-auto">
-          <h1 className="text-2xl font-bold text-gray-900 mb-1">Contact {agency.name}</h1>
-          <p className="text-sm text-gray-400">{agency.location} · License #{agency.license}</p>
+      <section className="relative overflow-hidden bg-gradient-to-br from-emerald-950 via-emerald-800 to-emerald-600 px-5 py-12 text-white sm:py-16">
+        <div className="pointer-events-none absolute -right-16 -top-24 h-72 w-72 rounded-full border border-white/15" />
+        <div className="relative mx-auto max-w-6xl">
+          <div className="flex items-center gap-2 text-sm font-semibold text-emerald-200">
+            <CheckCircle2 size={16} />
+            {agency.isSample ? 'Sample agency contact' : 'Approved agency contact'}
+          </div>
+          <h1 className="mt-4 text-3xl font-bold sm:text-4xl">
+            Contact {agency.name}
+          </h1>
+          <p className="mt-3 flex items-start gap-2 text-sm text-emerald-50 sm:text-base">
+            <MapPin size={18} className="mt-0.5 shrink-0" />
+            {location || 'Location not provided'}
+          </p>
+          <p className="mt-4 max-w-2xl text-sm leading-7 text-emerald-50/90">
+            Ask about services, application requirements, fees, and the next
+            steps for your overseas plans.
+          </p>
         </div>
-      </div>
+      </section>
 
-      {/* Body */}
-      <div className="max-w-5xl mx-auto px-8 py-8 flex gap-8">
+      <main className="mx-auto grid max-w-6xl grid-cols-1 items-start gap-6 px-5 py-8 lg:grid-cols-[minmax(0,1fr)_340px]">
+        <section className="rounded-3xl border border-gray-200 bg-white p-6 shadow-sm sm:p-8">
+          <h2 className="text-xl font-bold">Send an enquiry</h2>
+          <p className="mt-2 text-sm text-gray-500">
+            Contact <strong className="text-gray-800">{agency.name}</strong>.
+          </p>
 
-        {/* LEFT — Form */}
-        <div className="flex-1 min-w-0">
-          <div className="bg-white rounded-2xl border border-gray-200 p-8">
-            <h2 className="text-base font-bold text-gray-900 mb-1">Send a message</h2>
-            <p className="text-sm text-gray-400 mb-6">The agency will respond within 24 hours.</p>
+          {agency.isSample && (
+            <div className="mt-5 rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm leading-6 text-amber-900">
+              This is a demonstration agency. Test messages will not be sent
+              to a real business.
+            </div>
+          )}
 
-            {error && (
-              <div className="mb-5 px-4 py-3 rounded-xl text-sm"
-                style={{ backgroundColor: '#FEF2F2', color: '#DC2626' }}>
-                {error}
-              </div>
-            )}
+          {error && (
+            <div className="mt-5 rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">
+              {error}
+            </div>
+          )}
 
-            <form onSubmit={handleSubmit} className="flex flex-col gap-5">
+          {notice && (
+            <div className="mt-5 rounded-xl border border-blue-200 bg-blue-50 p-4 text-sm text-blue-900">
+              {notice}
+            </div>
+          )}
 
-              {/* Name row */}
-              <div className="grid grid-cols-2 gap-4">
-                {['firstName', 'lastName'].map((field, i) => (
-                  <div key={field}>
-                    <label className="block text-xs font-bold text-gray-400 uppercase tracking-wide mb-1.5">
-                      {i === 0 ? 'First name' : 'Last name'} <span className="text-red-400">*</span>
-                    </label>
-                    <input value={form[field]}
-                      onChange={e => setForm({ ...form, [field]: e.target.value })}
-                      placeholder={i === 0 ? 'Ashan' : 'Kumara'}
-                      className="w-full px-3 py-2.5 text-sm border border-gray-200 rounded-lg outline-none focus:border-green-700 transition-colors" />
-                  </div>
-                ))}
-              </div>
-
+          <form onSubmit={handleSubmit} className="mt-6 space-y-5">
+            <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
               <div>
-                <label className="block text-xs font-bold text-gray-400 uppercase tracking-wide mb-1.5">
-                  Email address <span className="text-red-400">*</span>
+                <label htmlFor="contact-name" className="mb-2 block text-sm font-semibold">
+                  Your name *
                 </label>
-                <input type="email" value={form.email}
-                  onChange={e => setForm({ ...form, email: e.target.value })}
+                <input
+                  id="contact-name"
+                  name="name"
+                  value={form.name}
+                  onChange={handleChange}
+                  required
+                  placeholder="Enter your name"
+                  className="w-full rounded-xl border border-gray-200 px-4 py-3 outline-none transition focus:border-emerald-600 focus:ring-4 focus:ring-emerald-50"
+                />
+              </div>
+              <div>
+                <label htmlFor="contact-email" className="mb-2 block text-sm font-semibold">
+                  Email address *
+                </label>
+                <input
+                  id="contact-email"
+                  name="email"
+                  type="email"
+                  value={form.email}
+                  onChange={handleChange}
+                  required
                   placeholder="you@example.com"
-                  className="w-full px-3 py-2.5 text-sm border border-gray-200 rounded-lg outline-none focus:border-green-700 transition-colors" />
+                  className="w-full rounded-xl border border-gray-200 px-4 py-3 outline-none transition focus:border-emerald-600 focus:ring-4 focus:ring-emerald-50"
+                />
               </div>
+            </div>
 
-              <div>
-                <label className="block text-xs font-bold text-gray-400 uppercase tracking-wide mb-1.5">
-                  Phone number
-                </label>
-                <input value={form.phone}
-                  onChange={e => setForm({ ...form, phone: e.target.value })}
-                  placeholder="+94 77 123 4567"
-                  className="w-full px-3 py-2.5 text-sm border border-gray-200 rounded-lg outline-none focus:border-green-700 transition-colors" />
-              </div>
-
-              <div>
-                <label className="block text-xs font-bold text-gray-400 uppercase tracking-wide mb-1.5">
-                  Applying for
-                </label>
-                <div className="relative">
-                  <select value={form.subject} onChange={e => setForm({ ...form, subject: e.target.value })}
-                    className="w-full appearance-none px-3 py-2.5 text-sm border border-gray-200 rounded-lg outline-none cursor-pointer focus:border-green-700 transition-colors">
-                    <option value="">Select topic...</option>
-                    {SUBJECTS.map(s => <option key={s}>{s}</option>)}
-                  </select>
-                  <span className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none text-xs">▾</span>
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-xs font-bold text-gray-400 uppercase tracking-wide mb-1.5">
-                  Your IELTS score <span className="text-gray-300">(optional)</span>
-                </label>
-                <input value={form.ielts}
-                  onChange={e => setForm({ ...form, ielts: e.target.value })}
-                  placeholder="e.g. 6.5"
-                  className="w-full px-3 py-2.5 text-sm border border-gray-200 rounded-lg outline-none focus:border-green-700 transition-colors" />
-              </div>
-
-              <div>
-                <label className="block text-xs font-bold text-gray-400 uppercase tracking-wide mb-1.5">
-                  Message <span className="text-red-400">*</span>
-                </label>
-                <textarea rows={5} value={form.message}
-                  onChange={e => setForm({ ...form, message: e.target.value })}
-                  placeholder="Tell the agency about your situation, questions, and timeline..."
-                  className="w-full px-3 py-2.5 text-sm border border-gray-200 rounded-lg outline-none resize-none focus:border-green-700 transition-colors" />
-              </div>
-
-              {/* Checkbox */}
-              <label className="flex items-start gap-3 cursor-pointer">
-                <div
-                  onClick={() => setForm({ ...form, agree: !form.agree })}
-                  className="w-4 h-4 rounded border-2 flex items-center justify-center flex-shrink-0 mt-0.5 transition-colors"
-                  style={{
-                    borderColor: form.agree ? '#0D5C3A' : '#D1D5DB',
-                    backgroundColor: form.agree ? '#0D5C3A' : 'white',
-                  }}>
-                  {form.agree && <CheckCircle size={10} color="white" />}
-                </div>
-                <span className="text-xs text-gray-500 leading-relaxed">
-                  I agree to be contacted by this agency regarding my application.
-                </span>
+            <div>
+              <label htmlFor="contact-phone" className="mb-2 block text-sm font-semibold">
+                Phone number
               </label>
+              <input
+                id="contact-phone"
+                name="phone"
+                value={form.phone}
+                onChange={handleChange}
+                placeholder="+94..."
+                className="w-full rounded-xl border border-gray-200 px-4 py-3 outline-none transition focus:border-emerald-600 focus:ring-4 focus:ring-emerald-50"
+              />
+            </div>
 
-              <button type="submit"
-                className="w-full py-3.5 rounded-xl text-white font-bold text-sm hover:opacity-90 transition-opacity"
-                style={{ backgroundColor: '#0D5C3A' }}>
-                Send message
-              </button>
+            <div>
+              <label htmlFor="contact-subject" className="mb-2 block text-sm font-semibold">
+                Subject
+              </label>
+              <input
+                id="contact-subject"
+                name="subject"
+                value={form.subject}
+                onChange={handleChange}
+                placeholder="Student visa enquiry"
+                className="w-full rounded-xl border border-gray-200 px-4 py-3 outline-none transition focus:border-emerald-600 focus:ring-4 focus:ring-emerald-50"
+              />
+            </div>
 
-              <p className="text-xs text-gray-300 text-center">
-                🔒 Your details are kept private and only shared with this verified agency.
-              </p>
-            </form>
-          </div>
-        </div>
+            <div>
+              <label htmlFor="contact-message" className="mb-2 block text-sm font-semibold">
+                Your message *
+              </label>
+              <textarea
+                id="contact-message"
+                name="message"
+                value={form.message}
+                onChange={handleChange}
+                required
+                rows={5}
+                placeholder={`Hello ${agency.name}, I would like to know more about your services...`}
+                className="w-full resize-y rounded-xl border border-gray-200 px-4 py-3 outline-none transition focus:border-emerald-600 focus:ring-4 focus:ring-emerald-50"
+              />
+            </div>
 
-        {/* RIGHT */}
-        <div className="w-72 flex-shrink-0 flex flex-col gap-4">
+            <button
+              type="submit"
+              className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-emerald-800 px-5 py-3.5 font-semibold text-white transition hover:bg-emerald-900 sm:w-auto"
+            >
+              <Send size={17} />
+              {agency.isSample ? 'Test enquiry form' : 'Prepare email'}
+            </button>
 
-          {/* Agency summary */}
-          <div className="bg-white rounded-2xl border border-gray-200 p-5">
-            <div className="flex items-center justify-between mb-4">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm"
-                  style={{ backgroundColor: agency.avatarBg, color: agency.avatarColor }}>
-                  {agency.initials}
-                </div>
+            <p className="text-xs leading-5 text-gray-400">
+              Real agency enquiries open your email application. This form does
+              not save enquiries to the database.
+            </p>
+          </form>
+        </section>
+
+        <aside className="space-y-5">
+          <section className="rounded-3xl border border-gray-200 bg-white p-6 shadow-sm">
+            <div className="flex items-center gap-3">
+              <div className="rounded-2xl bg-emerald-50 p-3 text-emerald-800">
+                <Building2 size={26} />
+              </div>
+              <div className="min-w-0">
+                <h2 className="break-words font-bold">{agency.name}</h2>
+                <p className="mt-1 text-xs text-gray-500">
+                  {agency.isSample ? 'Example listing' : 'Approved agency'}
+                </p>
+              </div>
+            </div>
+
+            <div className="mt-6 space-y-5 border-t border-gray-100 pt-5">
+              <div className="flex gap-3">
+                <MapPin size={18} className="mt-1 shrink-0 text-emerald-800" />
                 <div>
-                  <div className="text-sm font-bold text-gray-900">{agency.name}</div>
-                  <div className="text-xs text-gray-400">{agency.location}</div>
+                  <p className="text-xs text-gray-500">Location</p>
+                  <p className="mt-1 text-sm leading-6">{location || 'Not provided'}</p>
                 </div>
               </div>
-              <span className="text-xl font-bold" style={{ color: '#0D5C3A' }}>{agency.trust}</span>
-            </div>
-            <div className="flex flex-col gap-2.5 mb-4">
-              {agency.scores.map(s => <ScoreBar key={s.label} label={s.label} value={s.value} />)}
-            </div>
-            <button onClick={() => navigate(`/agencies/${id}`)}
-              className="text-xs font-bold flex items-center justify-center gap-1 w-full hover:opacity-80 transition-opacity"
-              style={{ color: '#0D5C3A' }}>
-              View full profile <ArrowRight size={12} />
-            </button>
-          </div>
 
-          {/* Response time */}
-          <div className="bg-white rounded-2xl border border-gray-200 p-5">
-            <div className="flex items-center gap-2 mb-1">
-              <Clock size={15} style={{ color: '#0D5C3A' }} />
-              <span className="text-xs text-gray-400">Typical response</span>
-            </div>
-            <div className="text-sm font-bold text-gray-900 mb-1">{agency.responseTime}</div>
-            <div className="flex items-center gap-1.5">
-              <div className="w-2 h-2 rounded-full bg-green-500" />
-              <span className="text-xs" style={{ color: '#0D5C3A' }}>Online now</span>
-            </div>
-          </div>
-
-          {/* What happens next */}
-          <div className="bg-white rounded-2xl border border-gray-200 p-5">
-            <h3 className="text-sm font-bold text-gray-900 mb-4">What happens next</h3>
-            <div className="flex flex-col gap-3">
-              {[
-                'Agency reviews your message',
-                `They contact you within ${agency.responseTime.toLowerCase()}`,
-                'Begin your application process',
-              ].map((step, i) => (
-                <div key={i} className="flex items-start gap-3">
-                  <div className="w-5 h-5 rounded-full flex items-center justify-center text-xs font-bold text-white flex-shrink-0"
-                    style={{ backgroundColor: '#0D5C3A' }}>
-                    {i + 1}
+              {agency.phone && (
+                <div className="flex gap-3">
+                  <Phone size={18} className="mt-1 shrink-0 text-emerald-800" />
+                  <div>
+                    <p className="text-xs text-gray-500">Phone</p>
+                    <a href={`tel:${agency.phone}`} className="mt-1 block text-sm hover:text-emerald-800">
+                      {agency.phone}
+                    </a>
                   </div>
-                  <span className="text-xs text-gray-600 leading-relaxed">{step}</span>
                 </div>
-              ))}
+              )}
+
+              {agency.email && (
+                <div className="flex gap-3">
+                  <Mail size={18} className="mt-1 shrink-0 text-emerald-800" />
+                  <div className="min-w-0">
+                    <p className="text-xs text-gray-500">Email</p>
+                    <p className="mt-1 break-all text-sm">{agency.email}</p>
+                  </div>
+                </div>
+              )}
+
+              {website && (
+                <div className="flex gap-3">
+                  <Globe size={18} className="mt-1 shrink-0 text-emerald-800" />
+                  <div className="min-w-0">
+                    <p className="text-xs text-gray-500">Website</p>
+                    <a
+                      href={website}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="mt-1 block break-all text-sm text-emerald-800 underline"
+                    >
+                      {agency.website}
+                    </a>
+                  </div>
+                </div>
+              )}
             </div>
-          </div>
-        </div>
-      </div>
+
+            <Link
+              to={id ? `/agencies/${agency.id}` : '/agencies'}
+              className="mt-6 flex items-center justify-center gap-2 rounded-xl border border-gray-200 px-4 py-3 text-sm font-semibold hover:border-emerald-300 hover:bg-emerald-50"
+            >
+              <ArrowLeft size={16} />
+              {id ? 'View agency profile' : 'Browse agencies'}
+            </Link>
+          </section>
+
+          <section className="rounded-3xl bg-emerald-950 p-6 text-white">
+            <CheckCircle2 size={24} className="text-emerald-300" />
+            <h3 className="mt-4 font-bold">Make an informed choice</h3>
+            <p className="mt-2 text-sm leading-6 text-emerald-100">
+              Confirm services, fees, and application requirements directly
+              before making payments.
+            </p>
+          </section>
+        </aside>
+      </main>
     </div>
   )
 }
